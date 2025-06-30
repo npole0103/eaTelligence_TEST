@@ -1,0 +1,5 @@
+pip install load_dotenv
+pip install pandas
+pip install lightgbm
+pip install scikit-learn
+pip install openai

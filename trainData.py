@@ -1,5 +1,12 @@
+import dataclasses
 import os as os
 from pathlib import Path
+from dotenv import load_dotenv
+from openai import OpenAI
+from dataclasses import dataclass, asdict
+from typing import List
+from typing import Dict
+import json
 
 import pandas as pd
 import lightgbm as lgb
@@ -25,7 +32,7 @@ datStore = datStore.merge(datUj, on='uj3_cd', how='left')
 ## 행정동 정보
 datStore = datStore.merge(datDong, on='dong_cd', how='left')
 ## 브랜드 정보
-datStore = datStore.merge(datBrnd[['brnd_no', 'brnd_inds_nm1', 'brnd_inds_nm2', 'majr_gds', 'store_cnt']], on='brnd_no', how='left')
+datStore = datStore.merge(datBrnd[['brnd_nm', 'brnd_no', 'brnd_inds_nm1', 'brnd_inds_nm2', 'majr_gds', 'store_cnt']], on='brnd_no', how='left')
 ## 본사 정보
 datStore = datStore.merge(datFchhq[['fchhq_no', 'fchhq_nm']], on='fchhq_no', how='left')
 ## GPS 좌표 정보
@@ -33,7 +40,7 @@ datStore = datStore.merge(datGps[['pnu', 'gps_lat', 'gps_lon']], on='pnu', how='
 ## 매출 정보 (업종 + 브랜드 + 행정동 기준)
 datStore = datStore.merge(datSales, on=['uj3_cd', 'brnd_no', 'dong_cd'],how='left')
 
-print(datStore.head())
+datStore.head(100).to_csv(DATA_PATH / "sample_5.csv", index=False, encoding='utf-8-sig')
 
 # # === 3. 타겟 생성 (상위 30%) ===
 # datStore = datStore.dropna(subset=['mall_amt_avg'])
