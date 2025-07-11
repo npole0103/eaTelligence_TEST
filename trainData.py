@@ -1,6 +1,8 @@
 import dataclasses
 import os as os
 from pathlib import Path
+
+import openai
 from dotenv import load_dotenv
 from openai import OpenAI
 from dataclasses import dataclass, asdict
@@ -15,7 +17,15 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.cluster import KMeans
 
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_openai import OpenAIEmbeddings
+from langchain_chroma import Chroma
+
 from common.module import DATA_PATH
+
+load_dotenv()
+CHATGPT_API_KEY = os.getenv("CHATGPT_API_KEY")
 
 # === 1. 데이터 불러오기 (UTF-8 적용) ===
 datStore = pd.read_csv(DATA_PATH / "dat_store.dat", sep='|', encoding='utf-8')

@@ -3,3 +3,6 @@ pip install pandas
 pip install lightgbm
 pip install scikit-learn
 pip install openai
+pip install dotenv
+pip install langchain chromadb tiktoken pypdf
+pip install -U langchain-openai langchain-chroma

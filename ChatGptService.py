@@ -1,6 +1,8 @@
 import dataclasses
 import os as os
 from pathlib import Path
+
+import openai
 from dotenv import load_dotenv
 from openai import OpenAI
 from dataclasses import dataclass, asdict
@@ -14,6 +16,11 @@ import lightgbm as lgb
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.cluster import KMeans
+
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_openai import OpenAIEmbeddings
+from langchain_chroma import Chroma
 
 from common.module import DATA_PATH
 
