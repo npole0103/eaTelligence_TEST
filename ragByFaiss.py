@@ -1,11 +1,16 @@
 import dataclasses
+import logging
 import os as os
 from pathlib import Path
+import re
+import gc
+from tqdm import tqdm
 
 import openai
+from click.core import batch
 from dotenv import load_dotenv
 from openai import OpenAI
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, fields
 from typing import List
 from typing import Dict
 import json
@@ -21,8 +26,9 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
+from langchain.schema import Document
 
-from common.module import DATA_PATH
+from common.module import DATA_PATH, brandStatsVo, datStoreVo, datSalesVo
 
 load_dotenv()
 CHATGPT_API_KEY = os.getenv("CHATGPT_API_KEY")
