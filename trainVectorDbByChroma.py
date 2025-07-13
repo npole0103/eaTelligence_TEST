@@ -28,7 +28,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 from langchain.schema import Document
 
-from common.module import DATA_PATH, brandStatsVo, datStoreVo, datSalesVo
+from common.module import DATA_PATH, brandStatsVo, datStoreVo, datSalesVo, CHUNK_SIZE
 
 load_dotenv()
 CHATGPT_API_KEY = os.getenv("CHATGPT_API_KEY")
@@ -328,10 +328,23 @@ def build_chroma_vectorstore(pdf_dir, persist_dir):
     if os.path.exists(persist_dir) and os.listdir(persist_dir):
         logging.info("기존 Chroma DB 감지, 벡터 추가 중...")
         vectordb = Chroma(persist_directory=persist_dir, embedding_function=embedding)
-        vectordb.add_documents(split_docs)
+
+        for i in tqdm(range(0, len(split_docs), CHUNK_SIZE)):
+            chunk = split_docs[i:i + CHUNK_SIZE]
+            vectordb.add_documents(chunk)
     else:
         logging.info("신규 Chroma DB 생성 중...")
-        vectordb = Chroma.from_documents(documents=split_docs, embedding=embedding, persist_directory=persist_dir)
+
+        # 첫 배치만 넣어서 생성
+        vectordb = Chroma.from_documents(
+            documents=split_docs[:CHUNK_SIZE],
+            embedding=embedding,
+            persist_directory=persist_dir
+        )
+
+        for i in tqdm(range(CHUNK_SIZE, len(split_docs), CHUNK_SIZE)):
+            chunk = split_docs[i:i + CHUNK_SIZE]
+            vectordb.add_documents(chunk)
 
     logging.info(f"✅ 총 {len(split_docs)} chunks 저장 완료!")
 
