@@ -17,3 +17,4 @@ playwright install
 pip install beautifulsoup4
 pip install ddgs
 pip install -U "langchain-core>=0.3" "langchain-community>=0.3"
+pip install --upgrade langchain-community google-search-results
