@@ -62,33 +62,51 @@ load_dotenv()
 CHATGPT_API_KEY = os.getenv("CHATGPT_API_KEY")
 SERPER_API_KEY = os.getenv("SERPER_API_KEY")
 
-# Chroma DB 불러오기
-def load_chroma(persist_dir="./chroma_db"):
-    embedding = OpenAIEmbeddings(openai_api_key=CHATGPT_API_KEY)
-    db = Chroma(persist_directory=persist_dir, embedding_function=embedding)
-    return db
+def renderingLogo(brnd_no :str):
+    LOGO_FILE_NAME = brnd_no + ".png"
 
-# 질의 실행
-def query_documents(db, query, k=3):
-    # MMR(Max Marginal Relevance)
-    '''
-        MMR : 중복 문서를 피하면서 다양하고 관련성 높은 문서 유지
-        k : 유사한 문서 반환 갯수
-        fetch_k : 후보로 가져오는 유사한 문서 갯수
-        score_threshold : 유사도 점수 기준 필터링 (0~1)
-    '''
-    retriever = db.as_retriever(
-        search_type="mmr",
-        search_kwargs={"k": 10, "fetch_k": 25, "score_threshold": 0.8})
-    results = retriever.get_relevant_documents(query)
+    # HTML 불러오기
+    with open(RESOURCE_PATH / "template.html", "r", encoding="utf-8") as f:
+        html_template = Template(f.read())
 
-    for i, doc in enumerate(results, 1):
-        print(f"\n🔎 결과 {i}:")
-        print(f"출처: {doc.metadata.get('source', '알 수 없음')}")
-        print(doc.page_content[:500] + "...")
-        print("-" * 50)
+    # 동적으로 경로 주입
+    rendered_html = html_template.substitute(
+        image_path = Path("../logo") / LOGO_FILE_NAME
+    )
+
+    # 결과 HTML 저장
+    with open(RESOURCE_PATH / f"{brnd_no}.html", "w", encoding="utf-8") as f:
+        f.write(rendered_html)
+
+def render_with_js_and_export_pdf(brnd_no: str):
+    with sync_playwright() as p:
+        OUTPUT_FILE_NAME = brnd_no + ".pdf"
+
+        # 로고 데이터 매핑
+        renderingLogo(brnd_no)
+
+        browser = p.chromium.launch()
+        page = browser.new_page()
+
+        # JS 오류 콘솔 확인
+        page.on("console", lambda msg: print(f"[console] {msg.type}: {msg.text}"))
+
+        # file:// 경로로 로드 (JS 동작 포함, 이미지도 로컬 가능)
+        page.goto((RESOURCE_PATH / f"{brnd_no}.html").as_uri())
+
+        # JavaScript가 JSON을 렌더링할 시간 기다림
+        page.wait_for_timeout(5000)  # 혹은 page.wait_for_selector("#content > div") 등 사용 가능
+        # page.wait_for_selector("#content > .card")
+
+        # PDF로 저장
+        page.pdf(
+            path=str(OUTPUT_PATH / OUTPUT_FILE_NAME),
+            format="A4",
+            print_background=True  # 이미지와 배경 포함
+        )
+        browser.close()
+        return OUTPUT_FILE_NAME
 
 if __name__ == "__main__":
-    db = load_chroma(persist_dir="./chroma_db")
-    user_query = input("질문을 입력하세요: ")
-    query_documents(db, user_query)
+    outputFilename = render_with_js_and_export_pdf("bhc")
+    print(f"✅ PDF 저장 완료: {OUTPUT_PATH / outputFilename}")

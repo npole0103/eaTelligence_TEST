@@ -32,6 +32,10 @@ logging.basicConfig(
 ROOT_PATH = Path.cwd()
 DATA_PATH = ROOT_PATH / 'dat'
 PDF_PATH = ROOT_PATH / 'pdf'
+RESOURCE_PATH = ROOT_PATH / 'resources'
+OUTPUT_PATH = ROOT_PATH / 'output'
+LOGO_PATH = ROOT_PATH / 'logo'
+
 CHUNK_SIZE = 100
 
 # 프롬포트 기본

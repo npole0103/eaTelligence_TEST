@@ -5,6 +5,11 @@ from pathlib import Path
 import re
 import gc
 import math
+from string import Template
+from http.server import HTTPServer, SimpleHTTPRequestHandler
+from threading import Thread
+from pathlib import Path
+import time
 
 from langchain.agents import initialize_agent, AgentType
 from tqdm import tqdm
@@ -17,6 +22,9 @@ from openai import OpenAI
 from dataclasses import dataclass, asdict, fields
 from typing import List, Dict
 import json
+from pathlib import Path
+from playwright.sync_api import sync_playwright
+import shutil
 
 import pandas as pd
 import lightgbm as lgb
@@ -40,7 +48,7 @@ from langchain_community.agent_toolkits import PlayWrightBrowserToolkit
 from langgraph.graph import StateGraph, END
 from langchain_openai import ChatOpenAI
 
-from common.module import DATA_PATH, brandStatsVo, datStoreVo, datSalesVo
+from common.module import DATA_PATH, brandStatsVo, datStoreVo, datSalesVo, OUTPUT_PATH, LOGO_PATH, RESOURCE_PATH
 
 import warnings
 
@@ -179,5 +187,21 @@ def generate_tel():
 
 	print(f"✅ 완료: {len(all_results)}개 브랜드 전화번호 저장")
 
+def updateTelNo():
+	xdf = pd.read_csv(DATA_PATH / "dat_brnd_v2.csv", encoding="utf-8")
+
+	with open(DATA_PATH / "brandDataTelNo.json", encoding="utf-8") as f:
+		jdf = pd.json_normalize(json.load(f))  # brd_cd, tel_no 존재
+
+	xdf.set_index("brnd_no", inplace=True)
+	jdf.set_index("brnd_no", inplace=True)
+
+	xdf.update(jdf[["tel_no"]])
+
+	xdf.reset_index(inplace=True)
+	xdf.to_csv(DATA_PATH / "dat_brnd_v3.csv", index=False, encoding='utf-8-sig')
+
 if __name__ == "__main__":
-	generate_tel()
+	# generate_tel()
+	updateTelNo()
+

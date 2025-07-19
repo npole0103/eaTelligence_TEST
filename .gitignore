@@ -9,6 +9,8 @@
 dat/
 pdf/
 logo/
+resources/
+output/
 
 # User-specific stuff
 .idea/**/workspace.xml

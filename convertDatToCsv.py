@@ -1,19 +1,30 @@
 import dataclasses
 import logging
-import os as os
+import os
 from pathlib import Path
 import re
 import gc
+import math
+from string import Template
+from http.server import HTTPServer, SimpleHTTPRequestHandler
+from threading import Thread
+from pathlib import Path
+import time
+
+from langchain.agents import initialize_agent, AgentType
 from tqdm import tqdm
+from typing import Optional
 
 import openai
 from click.core import batch
 from dotenv import load_dotenv
 from openai import OpenAI
 from dataclasses import dataclass, asdict, fields
-from typing import List
-from typing import Dict
+from typing import List, Dict
 import json
+from pathlib import Path
+from playwright.sync_api import sync_playwright
+import shutil
 
 import pandas as pd
 import lightgbm as lgb
@@ -27,12 +38,29 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 from langchain.schema import Document
+from langchain_core.tools import Tool
+from langchain_community.tools.ddg_search.tool import DuckDuckGoSearchRun
+from langchain_community.tools.google_serper import GoogleSerperRun
+from langchain.utilities import GoogleSerperAPIWrapper
+from langchain_community.tools.playwright.utils import create_async_playwright_browser
+from langchain_community.tools.playwright.utils import create_sync_playwright_browser
+from langchain_community.agent_toolkits import PlayWrightBrowserToolkit
+from langgraph.graph import StateGraph, END
+from langchain_openai import ChatOpenAI
 
-from common.module import DATA_PATH, brandStatsVo, datStoreVo, datSalesVo
+from common.module import DATA_PATH, brandStatsVo, datStoreVo, datSalesVo, OUTPUT_PATH, LOGO_PATH, RESOURCE_PATH
 
+import warnings
+
+warnings.filterwarnings(
+	"ignore",
+	category=DeprecationWarning,
+	module=r"langchain_core\.tools",
+)
 
 load_dotenv()
 CHATGPT_API_KEY = os.getenv("CHATGPT_API_KEY")
+SERPER_API_KEY = os.getenv("SERPER_API_KEY")
 
 # # === 1. 데이터 불러오기 (UTF-8 적용) ===
 # datStore = pd.read_csv(DATA_PATH / "dat_store.dat", sep='|', encoding='utf-8')
@@ -91,3 +119,8 @@ CHATGPT_API_KEY = os.getenv("CHATGPT_API_KEY")
 #
 # datSales.to_csv(DATA_PATH / "dat_sales_v3.dat", sep="|", index=False, encoding="utf-8")
 # datSales.to_csv(DATA_PATH / "dat_sales_v3.csv", index=False, encoding='utf-8-sig')
+
+# # 25.07.19(토) DAT_BRND 테이블 전화번호 업데이트 V3
+#
+# datBrnd = pd.read_csv(DATA_PATH / "dat_brnd_v3.csv", encoding='utf-8-sig')
+# datBrnd.to_csv(DATA_PATH / "dat_brnd_v3.dat", sep="|", index=False, encoding="utf-8")
