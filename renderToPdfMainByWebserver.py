@@ -62,39 +62,47 @@ load_dotenv()
 CHATGPT_API_KEY = os.getenv("CHATGPT_API_KEY")
 SERPER_API_KEY = os.getenv("SERPER_API_KEY")
 
-# Chroma DB 불러오기
-def load_chroma(persist_dir="./chroma_db"):
-    embedding = OpenAIEmbeddings(openai_api_key=CHATGPT_API_KEY)
-    db = Chroma(persist_directory=persist_dir, embedding_function=embedding)
-    return db
+def run_static_server(directory: Path, port=8000):
+    """HTTPServer 객체와 스레드를 반환"""
+    import os
+    os.chdir(directory)
+    server = HTTPServer(('localhost', port), SimpleHTTPRequestHandler)
+    thread = Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    time.sleep(1)  # 서버 준비 대기
+    return server, thread
 
-# 질의 실행
-def query_documents(db, query, k=3):
-    # MMR(Max Marginal Relevance)
-    '''
-        MMR : 중복 문서를 피하면서 다양하고 관련성 높은 문서 유지
-        k : 유사한 문서 반환 갯수
-        fetch_k : 후보로 가져오는 유사한 문서 갯수
-        score_threshold : 유사도 점수 기준 필터링 (0~1)
-    '''
-    retriever = db.as_retriever(
-        search_type="mmr",
-        search_kwargs={"k": 10, "fetch_k": 25, "lambda_mult": 0.7, "score_threshold": 0.8})
-    results = retriever.get_relevant_documents(query)
+def render_with_js_and_export_pdf(brnd_no: str):
 
-    # retriever = db.as_retriever(
-    #     search_type="similarity",
-    #     search_kwargs={"k": 20})
-    # results = retriever.get_relevant_documents(query)
+    # 간이 웹 서버 시작
+    server, thread = run_static_server(RESOURCE_PATH)
 
-    for i, doc in enumerate(results, 1):
-        print(f"\n🔎 결과 {i}:")
-        print(f"출처: {doc.metadata.get('source', '알 수 없음')}")
-        print(doc.page_content[:500] + "...")
-        print("-" * 50)
+    OUTPUT_FILE_NAME = "index.pdf"
+    output_path = OUTPUT_PATH / OUTPUT_FILE_NAME
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+
+        # 콘솔 로그 확인
+        page.on("console", lambda msg: print(f"[console] {msg.type}: {msg.text}"))
+        page.on("requestfailed", lambda req: print(f"[404] {req.url}"))
+
+        # HTML 열기 (fetch가 작동하려면 http://로 열어야 함)
+        page.goto(f"http://localhost:8000/resources/index.html")
+
+        # JSON이 렌더링될 때까지 대기
+        page.wait_for_timeout(5000)
+
+        # PDF 저장
+        page.pdf(path=str(output_path), format="A4", print_background=True)
+        browser.close()
+
+    # ✅ 서버 종료
+    server.shutdown()
+    thread.join()
+
+    print(f"✅ PDF 저장 완료: {output_path}")
 
 if __name__ == "__main__":
-    db = load_chroma(persist_dir="./chroma_db")
-    user_query = input("질문을 입력하세요: ")
-    # 에그셀런트 패스트푸드 매출 점포 수익율 수수료 키오스크 단말기
-    query_documents(db, user_query)
+    render_with_js_and_export_pdf("bhc")

@@ -35,6 +35,7 @@ from sklearn.cluster import KMeans
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
+from langchain.document_loaders import TextLoader
 from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 from langchain.schema import Document
@@ -66,12 +67,36 @@ SERPER_API_KEY = os.getenv("SERPER_API_KEY")
 # PDF 로드
 def load_pdfs(pdf_dir):
     docs = []
-    for filename in os.listdir(pdf_dir):
-        if filename.endswith(".pdf"):
-            loader = PyPDFLoader(os.path.join(pdf_dir, filename))
-            docs.extend(loader.load())
+    pdf_files = [f for f in os.listdir(pdf_dir) if f.lower().endswith(".pdf")]
+
+    print(f"[INFO] 총 PDF 파일 수: {len(pdf_files)}")
+
+    for filename in tqdm(pdf_files, desc="📄 PDF 로딩 중"):
+        path = os.path.join(pdf_dir, filename)
+        try:
+            loader = PyPDFLoader(path)
+            loaded = loader.load()
+            docs.extend(loaded)
+            print(f"[DEBUG] {filename} → 문서 {len(loaded)}개 로드")
+        except Exception as e:
+            print(f"[ERROR] {filename} 로드 실패: {e}")
+
     return docs
 
+def load_txts(txt_dir):
+    docs = []
+    for filename in os.listdir(txt_dir):
+        if filename.endswith(".txt"):
+            path = os.path.join(txt_dir, filename)
+            print(f"[DEBUG] 시도 중: {path}")
+            try:
+                loader = TextLoader(path, encoding="utf-8")
+                doc = loader.load()
+                print(f"[DEBUG] 로드 성공: {filename}, 문서 수: {len(doc)}")
+                docs.extend(doc)
+            except Exception as e:
+                print(f"[ERROR] {filename} 로딩 실패: {e}")
+    return docs
 
 # 텍스트 분할 (RecursiveCharacterTextSplitter 사용)
 def split_documents(documents):
@@ -80,7 +105,13 @@ def split_documents(documents):
         chunk_overlap=200,
         separators=["\n\n", "\n", ".", " "]  # 문단, 문장 단위 우선 분할
     )
-    return splitter.split_documents(documents)
+
+    all_chunks = []
+    for doc in tqdm(documents, desc="📚 문서 분할 중"):
+        chunks = splitter.split_documents([doc])
+        all_chunks.extend(chunks)
+
+    return all_chunks
 
 def brndStatsCsvToDocs(datBrnd, datFchhq, brandStats):
     docs = []
@@ -335,11 +366,14 @@ def load_csvs():
     return docs
 
 # 4. 전체 처리 파이프라인
-def build_chroma_vectorstore(pdf_dir, persist_dir):
+def build_chroma_vectorstore(pdf_dir, txt_dir, persist_dir):
     # (1) 로딩 데이터 셋팅
     logging.info("MAIN 데이터 로드 시작..")
-    # documents = load_pdfs(pdf_dir)
-    documents = load_csvs()
+    documents = load_pdfs(pdf_dir)
+    documents.extend(load_txts(txt_dir))
+    # documents = load_csvs()
+
+    print(f"[DEBUG] 문서 수: {len(documents)}")
 
     # (2) 텍스트 분할
     logging.info("MAIN 텍스트 분할 SPLIT")
@@ -354,30 +388,40 @@ def build_chroma_vectorstore(pdf_dir, persist_dir):
     )
 
     # (4) Chroma DB 경로 존재 여부 확인
+    total = len(split_docs)
+
     if os.path.exists(persist_dir) and os.listdir(persist_dir):
         logging.info("기존 Chroma DB 감지, 벡터 추가 중...")
         vectordb = Chroma(persist_directory=persist_dir, embedding_function=embedding)
 
-        for i in tqdm(range(0, len(split_docs), CHUNK_SIZE)):
+        for i in tqdm(range(0, total, CHUNK_SIZE)):
             chunk = split_docs[i:i + CHUNK_SIZE]
-            vectordb.add_documents(chunk)
+            if chunk:  # 안전 확인
+                vectordb.add_documents(chunk)
+
     else:
         logging.info("신규 Chroma DB 생성 중...")
 
-        # 첫 배치만 넣어서 생성
+        if total == 0:
+            raise ValueError("❌ split_docs가 비어 있어 Chroma를 생성할 수 없습니다.")
+
+        # 첫 배치로 초기 생성
+        first_batch = split_docs[:CHUNK_SIZE]
         vectordb = Chroma.from_documents(
-            documents=split_docs[:CHUNK_SIZE],
+            documents=first_batch,
             embedding=embedding,
             persist_directory=persist_dir
         )
 
-        for i in tqdm(range(CHUNK_SIZE, len(split_docs), CHUNK_SIZE)):
+        # 남은 배치 추가
+        for i in tqdm(range(CHUNK_SIZE, total, CHUNK_SIZE)):
             chunk = split_docs[i:i + CHUNK_SIZE]
-            vectordb.add_documents(chunk)
+            if chunk:  # 방어적 처리
+                vectordb.add_documents(chunk)
 
     logging.info(f"✅ 총 {len(split_docs)} chunks 저장 완료!")
 
 
 # 실행
 if __name__ == "__main__":
-    build_chroma_vectorstore(pdf_dir="./pdf", persist_dir="./chroma_db")
+    build_chroma_vectorstore(pdf_dir="./pdf", txt_dir="./txt",persist_dir="./chroma_db")

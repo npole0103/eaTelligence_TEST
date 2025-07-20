@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- css -->
+    <link rel="stylesheet" href="./src/css/reset.css" />
+    <link rel="stylesheet" href="./src/css/common.css" />
+    <link rel="stylesheet" href="./src/css/contents.css" />
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.6.0/echarts.min.js"
+      integrity="sha512-XSmbX3mhrD2ix5fXPTRQb2FwK22sRMVQTpBP2ac8hX7Dh/605hA2QDegVWiAvZPiXIxOV0CbkmUjGionDpbCmw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+    <!-- util & geo -->
+    <script src="./src/koreaGeo.js" defer></script>
+    <script src="./src/utilfunc.js" defer></script>
+
+    <!-- 각 차트 -->
+    <script src="./src/charts/barChart.js" defer></script>
+    <script src="./src/charts/donutChart.js" defer></script>
+    <script src="./src/charts/geoChart.js" defer></script>
+    <script src="./src/charts/horizontalBarChart.js" defer></script>
+    <script src="./src/charts/radarChart.js" defer></script>
+
+    <title>리포트</title>
+    <script src="src/utilfunc.js"></script>
+  </head>
+  <body>
+  <div id="template-root">
+    <!-- 페이지1 -->
+    <section class="paper" id="firstPage">
+      <div class="page-info">
+        <span class="page-info__page-number">01/05</span>
+        <span class="page-info__brand-name">{{meta.brnd_nm}}</span>
+      </div>
+      <div class="page-header">
+        <div class="page-header__main">
+          <div class="page-header__thumb">
+            <img src="./public/logo.png" alt="logo" />
+          </div>
+          <div class="page-header__info">
+            <h1 class="page-header__title">{{meta.brnd_nm}}</h1>
+            <p class="page-header__category">
+              <span class="page-header__category-item">{{meta.uj3_nm}}</span>
+<!--              <span class="page-header__dot">&#183;</span>-->
+<!--              <span class="page-header__category-item">토스트전문</span>-->
+            </p>
+          </div>
+        </div>
+        <div class="page-header__meta">
+          <span class="page-header__based-date">2024년 12월 기준</span>
+        </div>
+      </div>
+      <div class="ai-summary ai-summary__head">
+        <img
+          class="ai-summary__head--icon"
+          src="./public/icon-star-two.svg"
+          alt="아이콘"
+        />
+        <p class="ai-summary__head--desc">
+          동물복지 유정란과 프리미엄 통식빵으로 만든 수제 에그 샌드위치 전문점
+        </p>
+      </div>
+      <div class="section__wrap">
+        <section class="section__wrap--group">
+          <div class="content-block">
+            <div class="section__title">
+              <h3>주요 지표</h3>
+            </div>
+            <div class="card__wrap">
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">점포 수</h4>
+                  <span class="card__item--value">114개</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">연매출</h4>
+                  <span class="card__item--value">24.7억원</span>
+                </div>
+              </div>
+            </div>
+            <div class="card__wrap" style="margin-top: 10px">
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">업계 내 점포 점유율</h4>
+                  <span class="card__item--value">11.2%</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">업계 내 매출 점유율</h4>
+                  <span class="card__item--value">7.4%</span>
+                </div>
+              </div>
+            </div>
+            <div class="card__wrap" style="margin-top: 10px">
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">연간 개업 수</h4>
+                  <span class="card__item--value">1개</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">연간 폐업 수</h4>
+                  <span class="card__item--value">1개</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="content-block" style="margin-top: 15px">
+            <div class="section__title">
+              <h3>기본 정보</h3>
+            </div>
+            <ul class="basic-info__list">
+              <li class="basic-info__item">
+                <span class="basic-info__label">법인명</span>
+                <span class="basic-info__value">(주)다이닝팩토리</span>
+              </li>
+              <li class="basic-info__item">
+                <span class="basic-info__label">대표자명</span>
+                <span class="basic-info__value">이광호</span>
+              </li>
+              <li class="basic-info__item">
+                <span class="basic-info__label">대표 연락처</span>
+                <span class="basic-info__value">02-1677-1232</span>
+              </li>
+              <li class="basic-info__item">
+                <span class="basic-info__label">법인번호</span>
+                <span class="basic-info__value">117-23403-30</span>
+              </li>
+              <li class="basic-info__item">
+                <span class="basic-info__label">설립일</span>
+                <span class="basic-info__value">2019년 02월 17일</span>
+              </li>
+              <li class="basic-info__item">
+                <span class="basic-info__label">총 운영기간</span>
+                <span class="basic-info__value">5년 7개월</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+        <section class="section__wrap--group">
+          <div class="content-block">
+            <div class="section__title">
+              <h3>AI 종합 분석</h3>
+              <img src="./public/icon-star-two.svg" alt="icon" />
+            </div>
+            <div class="brand-competitiveness-chart">
+              <div
+                id="brandCompetitivenessRadar"
+                style="width: 100%; height: 224px"
+              ></div>
+
+              <div class="brand-analysis-card-grid">
+                <div class="brand-analysis-card">
+                  <div class="brand-analysis-card__title">
+                    <h4>확장성</h4>
+                    <div class="stars">
+                      <img class="star" src="public/icon-star-filled.svg" />
+                      <img class="star" src="public/icon-star-filled.svg" />
+                      <img class="star" src="public/icon-star-filled.svg" />
+                      <img class="star" src="public/icon-star-filled.svg" />
+                      <img class="star" src="public/icon-star-filled.svg" />
+                    </div>
+                  </div>
+                  <ul class="brand-analysis-card__list">
+                    <li>OKPOS 관점 고객사 영업 확장 가능성</li>
+                    <li>업계 내 점포 점유율 : 11.2%(업계 내 3위)</li>
+                    <li>업계 내 매출 점유율 : 7.4%(업계 내 12위)</li>
+                  </ul>
+                </div>
+                <div class="brand-analysis-card">
+                  <div class="brand-analysis-card__title">
+                    <h4>안정성</h4>
+                    <div class="stars">
+                      <img class="star" src="public/icon-star-filled.svg" />
+                      <img class="star" src="public/icon-star-filled.svg" />
+                      <img class="star" src="public/icon-star-filled.svg" />
+                      <img class="star" src="public/icon-star-filled.svg" />
+                      <img class="star" src="public/icon-star-filled.svg" />
+                    </div>
+                  </div>
+                  <ul class="brand-analysis-card__list">
+                    <li>평균 점포 수명 : 4년 3개월</li>
+                    <li>매출 증감률 : 연 0.0%</li>
+                    <li>점포 증감률 : 연 00.0%</li>
+                  </ul>
+                </div>
+                <div class="brand-analysis-card">
+                  <div class="brand-analysis-card__title">
+                    <h4>수익성</h4>
+                    <div class="stars">
+                      <img class="star" src="public/icon-star-filled.svg" />
+                      <img class="star" src="public/icon-star-filled.svg" />
+                      <img class="star" src="public/icon-star-filled.svg" />
+                      <img class="star" src="public/icon-star-filled.svg" />
+                      <img class="star" src="public/icon-star-filled.svg" />
+                    </div>
+                  </div>
+                  <ul class="brand-analysis-card__list">
+                    <li>매출액 : 연 24.7억원</li>
+                    <li>업계 내 매출 상위 1등급 점포 비율 : 53.7%</li>
+                    <li>업계 내 매출 상위 2등급 점포 비율 : 46.3%</li>
+                  </ul>
+                </div>
+                <div class="brand-analysis-card">
+                  <div class="brand-analysis-card__title">
+                    <h4>잠재성</h4>
+                    <div class="stars">
+                      <img class="star" src="public/icon-star-filled.svg" />
+                      <img class="star" src="public/icon-star-filled.svg" />
+                      <img class="star" src="public/icon-star-filled.svg" />
+                      <img class="star" src="public/icon-star-filled.svg" />
+                      <img class="star" src="public/icon-star-filled.svg" />
+                    </div>
+                  </div>
+                  <ul class="brand-analysis-card__list">
+                    <li>포털 검색량 : 연 11,524건</li>
+                    <li>개업 현황 : 연 1개</li>
+                    <li>폐업 현황 : 연 1개</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- 페이지2 -->
+    <section class="paper" id="secondPage">
+      <div class="page-info">
+        <span class="page-info__page-number">02/05</span>
+        <span class="page-info__brand-name">에그셀런트</span>
+      </div>
+      <div class="page-header">
+        <div>
+          <h1 class="page-header__title">점포 현황</h1>
+          <span class="page-header__based-date">2024년도 12개월 기준</span>
+        </div>
+      </div>
+      <div class="ai-summary" style="margin-top: 10px; margin-bottom: 20px">
+        <div class="ai-summary__title">
+          <img src="./public/icon-star-two.svg" />
+          <h4>AI 요약</h4>
+        </div>
+        <p class="ai-summary__desc">
+          에그셀런트는 점포 수는 업계 3위 수준이지만, 매출 점유율은 2.4%로 매우
+          낮아 매장당 매출 효율이 현저히 떨어지고 있는 상황이에요.현재 점포 확장
+          전략보다는 단일 매장의 수익성 개선이 시급한 상황이라고 판단할 수
+          있어요.
+        </p>
+      </div>
+      <div class="section__wrap">
+        <section class="section__wrap--group">
+          <div class="content-block">
+            <div class="section__title">
+              <h3>점포 수 추이</h3>
+              <span>2024년 12월 기준</span>
+            </div>
+            <div
+              class="card__wrap"
+              style="margin-top: 10px; margin-bottom: 10px"
+            >
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">점포 수</h4>
+                  <span class="card__item--value">114개</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">연간 점포 증감 수</h4>
+                  <span class="card__item--value">+1개</span>
+                </div>
+              </div>
+            </div>
+            <div class="card__wrap">
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">평균 점포 수명</h4>
+                  <span class="card__item--value">4년 11개월</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">총 운영기간</h4>
+                  <span class="card__item--value">5년 7개월</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-block" style="margin-top: 48px">
+            <div class="section__title" style="margin-bottom: 10px">
+              <h3>최근 12개월 점포 수 추이</h3>
+              <span>2024년 12월 기준</span>
+            </div>
+            <div id="storeCountChart" style="width: 100%; height: 190px"></div>
+          </div>
+
+          <div class="content-block">
+            <table class="growth-table">
+              <thead class="growth-table__head">
+                <tr class="growth-table__row">
+                  <th class="growth-table__cell growth-table__cell--header">
+                    a. 개업 수
+                  </th>
+                  <th class="growth-table__cell growth-table__cell--header">
+                    b. 폐업 수
+                  </th>
+                  <th class="growth-table__cell growth-table__cell--header">
+                    c. 총 증감 수(a-b)
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="growth-table__body">
+                <tr class="growth-table__row">
+                  <td class="growth-table__cell">2개</td>
+                  <td class="growth-table__cell">1개</td>
+                  <td class="growth-table__cell">1개</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="section__wrap--group">
+          <div class="content-block">
+            <div class="section__title" style="margin-bottom: 10px">
+              <h3>점포 분포 현황</h3>
+              <span>2024년 12월 기준</span>
+            </div>
+            <section class="geo-chart">
+              <div id="storeGeoChart" style="width: 100%; height: 264px"></div>
+            </section>
+          </div>
+          <div class="content-block">
+            <div
+              class="section__title"
+              style="margin-bottom: 10px; margin-top: 29px"
+            >
+              <h3>지역별 분포 순위</h3>
+              <span>2024년 12월 기준</span>
+            </div>
+            <div class="rank-box rank-box--highsales">
+              <ul class="rank-box__list">
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">1위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">2위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">3위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">4위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">5위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+              </ul>
+              <ul class="rank-box__list">
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">6위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">7위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">8위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">9위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">10위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- 페이지3 -->
+    <section class="paper" id="thirdPage">
+      <div class="page-info">
+        <span class="page-info__page-number">03/05</span>
+        <span class="page-info__brand-name">에그셀런트</span>
+      </div>
+      <div class="page-header">
+        <div>
+          <h1 class="page-header__title">매출 현황</h1>
+          <span class="page-header__based-date">2024년도 12개월 기준</span>
+        </div>
+      </div>
+      <div class="ai-summary" style="margin-top: 10px; margin-bottom: 38px">
+        <div class="ai-summary__title">
+          <img src="./public/icon-star-two.svg" />
+          <h4>AI 요약</h4>
+        </div>
+        <p class="ai-summary__desc">
+          에그셀런트는 매출 점유율 2.7%로 업계 12위에 머물러 있으며, 상위 브랜드
+          대비 현저히 낮은 성과를 보이고 있습니다. 빠른 출점 속도에 비해 매출이
+          따라가지 못해, 매장별 효율 개선과 브랜드 경쟁력 강화를 통한 실적
+          개선이 필요한 시점입니다.
+        </p>
+      </div>
+      <div class="section__wrap">
+        <section class="section__wrap--group">
+          <div class="content-block">
+            <div class="section__title">
+              <h3>매출 개요</h3>
+              <span>2024년 12월 기준(NICE지급결제 3사)</span>
+            </div>
+            <p class="section__sub-title">
+              *점포당 매출액은 지불 여력과 제품 수요 수준을 유추할 수 있습니다.
+            </p>
+            <div
+              class="card__wrap"
+              style="margin-top: 10px; margin-bottom: 10px"
+            >
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">연 평균 매출액</h4>
+                  <span class="card__item--value">24.7억원</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">월 평균 매출액</h4>
+                  <span class="card__item--value">2억원</span>
+                </div>
+              </div>
+            </div>
+            <div class="card__wrap">
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">점포당 연 평균 매출</h4>
+                  <span class="card__item--value">8,383만원</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">점포당 월 평균 매출액</h4>
+                  <span class="card__item--value">2,240만원</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-block" style="margin-top: 46px">
+            <div class="section__title" style="margin-bottom: 10px">
+              <h3>매출 추이</h3>
+              <span>2024년 12월 기준</span>
+            </div>
+            <div id="salesCountChart" style="width: 100%; height: 190px"></div>
+          </div>
+        </section>
+
+        <section class="section__wrap--group">
+          <div class="content-block">
+            <div class="section__title">
+              <h3>업종 내 점포 매출 비교</h3>
+              <span>2024년 12월 기준(NICE지급결제 3사)</span>
+            </div>
+            <p class="section__sub-title">
+              *상위 1~2등급 비율이 높을수록 동일 업종 내 경쟁력이 높다고 판단할
+              수 있습니다.
+            </p>
+            <div
+              class="card__wrap"
+              style="margin-top: 10px; margin-bottom: 10px"
+            >
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">업종 기준</h4>
+                  <span class="card__item--value">토스트전문</span>
+                </div>
+              </div>
+            </div>
+            <div class="card__wrap">
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">점포당 연 평균 매출</h4>
+                  <span class="card__item--value">8,383만원</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">점포당 월 평균 매출액</h4>
+                  <span class="card__item--value">2,240만원</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="content-block" style="margin-top: 46px">
+            <div class="section__title" style="margin-bottom: 10px">
+              <h3>지역별 매출 순위</h3>
+              <span>2024년 12월 기준</span>
+            </div>
+            <div class="rank-box rank-box--highsales">
+              <ul class="rank-box__list">
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">1위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">2위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">3위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">4위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">5위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+              </ul>
+              <ul class="rank-box__list">
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">6위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">7위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">8위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">9위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+                <li class="rank-box__item">
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--primary">10위</span>
+                    <span class="rank-box__item--label">서울시 마포구</span>
+                  </div>
+                  <div class="rank-box__item--section">
+                    <span class="rank-box__item--value">11개</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <p class="section__sub-title section__sub-title--desc">
+            *점포 수가 10개 미만인 경우, 지역과 매출액이 ‘ - ‘으로 노출될 수
+            있습니다.
+          </p>
+        </section>
+      </div>
+    </section>
+
+    <!-- 페이지4 -->
+    <section class="paper" id="fourthPage">
+      <div class="page-info">
+        <span class="page-info__page-number">04/05</span>
+        <span class="page-info__brand-name">에그셀런트</span>
+      </div>
+      <div class="page-header">
+        <div>
+          <h1 class="page-header__title">동일 업종 비교</h1>
+          <span class="page-header__based-date">2024년도 12개월 기준</span>
+        </div>
+      </div>
+      <div class="content-block" style="margin-bottom: 30px">
+        <div class="card__wrap" style="margin-top: 10px">
+          <div class="card">
+            <div class="card__item">
+              <h4 class="card__item--title">업종 기준</h4>
+              <span class="card__item--value">토스트전문</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card__item">
+              <h4 class="card__item--title">동일 업종 브랜드 수</h4>
+              <span class="card__item--value">36개</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card__item">
+              <h4 class="card__item--title">점포 수 순위</h4>
+              <div style="display: flex; gap: 6px">
+                <span class="card__item--value">3위</span>
+                <span class="card__item--value fc-blue">높음</span>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card__item">
+              <h4 class="card__item--title">연매출 순위</h4>
+              <div style="display: flex; gap: 6px">
+                <span class="card__item--value">12위</span>
+                <span class="card__item--value fc-gray">보통</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section__wrap">
+        <section class="section__wrap--group">
+          <div class="content-block">
+            <div class="section__title" style="margin-bottom: 10px">
+              <h3>점포 수 순위</h3>
+              <span>2024년 12월 기준</span>
+            </div>
+
+            <div id="storeRankChart" style="width: 100%; height: 210px"></div>
+          </div>
+
+          <div class="content-block" style="margin-top: 51px">
+            <div class="section__title" style="margin-bottom: 10px">
+              <h3>동일 업종 ‘무인주문기’ 이용 현황</h3>
+              <span>2024년 12월 기준(출처 : 통계청)</span>
+            </div>
+            <div class="ai-summary">
+              <div class="ai-summary__title">
+                <div class="ai-summary__title--main">
+                  <h4>참고 사항</h4>
+                  <img src="./public/icon-star-two.svg" />
+                </div>
+                <div class="ai-summary__title--desc">
+                  피자·햄버거·샌드위치 및 유사 음식점업 기준
+                </div>
+              </div>
+              <ul class="ai-summary__desc ai-summary__list">
+                <li class="ai-summary__item">
+                  해당 업종의 키오스크 사용량은 47.8%로 매우 높은 편
+                </li>
+                <li class="ai-summary__item">
+                  OKPOS 키오스크 제품을 제안할 경우 도입 가능성이 높을 것으로
+                  예상함.
+                </li>
+                <li class="ai-summary__item">
+                  태블릿PC 또한 22.9%로 높은 편에 속해 크로스 셀링 전략을 활용할
+                  수 있을 것으로 보임.
+                </li>
+                <li class="ai-summary__item">
+                  휴대폰 주문 사용량은 낮은 편이나 QR 오더 제품 등을 함께 제안할
+                  수 있을 것으로 보임.
+                </li>
+                <li class="ai-summary__item">
+                  단, 여러 업종이 종합된 통계로 실제 무인주문기 사용 행태에
+                  대해서는 추가 확인이 필요함.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="section__wrap--group">
+          <div class="content-block">
+            <div class="section__title" style="margin-bottom: 10px">
+              <h3>매출 순위</h3>
+              <span>2024년 12월 기준</span>
+            </div>
+
+            <div
+              id="storeSaleRankChart"
+              style="width: 100%; height: 210px"
+            ></div>
+          </div>
+
+          <div class="content-block" style="margin-top: 51px">
+            <div class="card__wrap" style="margin-top: 37px">
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">키오스크</h4>
+                  <span class="card__item--value">47.8%</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">태블릿PC</h4>
+                  <span class="card__item--value">22.9%</span>
+                </div>
+              </div>
+            </div>
+            <div class="card__wrap" style="margin-top: 10px">
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">휴대폰</h4>
+                  <span class="card__item--value">14.9%</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card__item">
+                  <h4 class="card__item--title">기타</h4>
+                  <span class="card__item--value">11.4%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- 페이지5 -->
+    <section class="paper" id="fifthPage">
+      <div class="page-info">
+        <span class="page-info__page-number">05/05</span>
+        <span class="page-info__brand-name">에그셀런트</span>
+      </div>
+      <div class="page-header">
+        <div>
+          <h1 class="page-header__title">결론</h1>
+          <span class="page-header__based-date">2024년도 12개월 기준</span>
+        </div>
+      </div>
+
+      <div class="section__wrap">
+        <section class="section__wrap--group">
+          <div class="content-block">
+            <div class="section__title" style="margin-top: 32px">
+              <h3>추천 전략</h3>
+              <img src="./public/icon-star-two.svg" />
+            </div>
+            <p class="section__sub-title">
+              *점포당 매출액은 지불 여력과 제품 수요 수준을 유추할 수 있습니다.
+            </p>
+          </div>
+          <div class="content-block" style="margin-top: 12px">
+            <div class="ai-summary">
+              <ul class="ai-summary__desc ai-summary__list">
+                <li class="ai-summary__item">
+                  해당 브랜드를 분석한 내용을 기반으로 OKPOS의 제품 제안 전략
+                  정리
+                </li>
+                <li class="ai-summary__item">
+                  매출 관리 솔루션 ‘오늘얼마' 제안 가능
+                </li>
+                <li class="ai-summary__item">
+                  배달 통합 관리 솔루션 ‘배달파트너' 제안 가능
+                </li>
+                <li class="ai-summary__item">
+                  키오스크, 태블릿PC 등 무인 주문기 도입 가능(동일 업종 내
+                  키오스크 사용률 약 47.8%로 확인됨 - 출처 : 통계청)
+                </li>
+                <li class="ai-summary__item">
+                  본사와 제휴 계약을 맺기 전, 서울시 강남구 일부 고매출 매장을
+                  대상으로 파일럿 제안 가능
+                </li>
+              </ul>
+
+              <ul class="ai-summary__desc ai-summary__list">
+                <li class="ai-summary__item">
+                  해당 브랜드를 분석한 내용을 기반으로 OKPOS의 제품 제안 전략
+                  정리
+                </li>
+                <li class="ai-summary__item">
+                  매출 관리 솔루션 ‘오늘얼마' 제안 가능
+                </li>
+                <li class="ai-summary__item">
+                  배달 통합 관리 솔루션 ‘배달파트너' 제안 가능
+                </li>
+                <li class="ai-summary__item">
+                  키오스크, 태블릿PC 등 무인 주문기 도입 가능(동일 업종 내
+                  키오스크 사용률 약 47.8%로 확인됨 - 출처 : 통계청)
+                </li>
+                <li class="ai-summary__item">
+                  본사와 제휴 계약을 맺기 전, 서울시 강남구 일부 고매출 매장을
+                  대상으로 파일럿 제안 가능
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <div class="section-group">
+          <section class="section__wrap--group">
+            <div class="content-block">
+              <div class="section__title" style="margin-bottom: 10px">
+                <h3>POS 영업 타겟 예측</h3>
+                <span>2024년 12월 기준</span>
+              </div>
+
+              <div class="pos-sale-target-chart">
+                <div
+                  id="posSaleTargetChart"
+                  style="width: 100%; height: 212px"
+                ></div>
+              </div>
+              <p class="section__sub-title section__sub-title--desc">
+                *본 수치는 OKPOS POS 제품 기준이며, 미사용 점포 수는 공정위 등록
+                가맹점 수에서 NICE 결제 가맹점을 제외하여 추정한 값입니다.
+                실제와 차이가 있을 수 있어 추가 확인이 필요합니다.
+              </p>
+            </div>
+          </section>
+          <section class="section__wrap--group">
+            <div class="content-block">
+              <div class="section__title" style="margin-bottom: 10px">
+                <h3>브랜드 인지도</h3>
+                <span>네이버 검색/블로그/카페 기준(최근 30일)</span>
+              </div>
+              <div class="card__wrap">
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">키워드 검색량</h4>
+                    <span class="card__item--value">3,360건</span>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">블로그 발행량</h4>
+                    <span class="card__item--value">78건</span>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">카페 발행량</h4>
+                    <span class="card__item--value">68건</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="content-block" style="margin-top: 24px">
+              <div class="section__title" style="margin-bottom: 10px">
+                <h3>AI 뉴스</h3>
+                <img src="./public/icon-star-two.svg" alt="icon" />
+                <span>최근 1년 이내 언론보도</span>
+              </div>
+              <div class="ai-summary" style="height: 82px">
+                <p class="ai-summary__desc">
+                  테이크아웃 및 딜리버리 서비스에 특화된 배달창업 브랜드
+                  에그셀런트는 브랜드 런칭 이후, 2024년 12월까지 꾸준하게
+                  가맹점을 확장하며 114호점까지 빠르게 성장하고 있어 화제인
+                  브랜드예요.
+                </p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+    </div>
+  </body>
+
+  <script src="./src/render.js" defer></script>
+</html>
