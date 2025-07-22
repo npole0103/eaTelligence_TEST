@@ -33,20 +33,20 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.cluster import KMeans
 
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_openai import OpenAIEmbeddings
-from langchain_chroma import Chroma
-from langchain.schema import Document
-from langchain_core.tools import Tool
-from langchain_community.tools.ddg_search.tool import DuckDuckGoSearchRun
-from langchain_community.tools.google_serper import GoogleSerperRun
-from langchain.utilities import GoogleSerperAPIWrapper
-from langchain_community.tools.playwright.utils import create_async_playwright_browser
-from langchain_community.tools.playwright.utils import create_sync_playwright_browser
-from langchain_community.agent_toolkits import PlayWrightBrowserToolkit
-from langgraph.graph import StateGraph, END
-from langchain_openai import ChatOpenAI
+# from langchain.text_splitter import RecursiveCharacterTextSplitter
+# from langchain_community.document_loaders import PyPDFLoader
+# from langchain_openai import OpenAIEmbeddings
+# from langchain_chroma import Chroma
+# from langchain.schema import Document
+# from langchain_core.tools import Tool
+# from langchain_community.tools.ddg_search.tool import DuckDuckGoSearchRun
+# from langchain_community.tools.google_serper import GoogleSerperRun
+# from langchain.utilities import GoogleSerperAPIWrapper
+# from langchain_community.tools.playwright.utils import create_async_playwright_browser
+# from langchain_community.tools.playwright.utils import create_sync_playwright_browser
+# from langchain_community.agent_toolkits import PlayWrightBrowserToolkit
+# from langgraph.graph import StateGraph, END
+# from langchain_openai import ChatOpenAI
 
 from common.module import DATA_PATH, brandStatsVo, datStoreVo, datSalesVo, OUTPUT_PATH, LOGO_PATH, RESOURCE_PATH
 
@@ -124,3 +124,19 @@ SERPER_API_KEY = os.getenv("SERPER_API_KEY")
 #
 # datBrnd = pd.read_csv(DATA_PATH / "dat_brnd_v3.csv", encoding='utf-8-sig')
 # datBrnd.to_csv(DATA_PATH / "dat_brnd_v3.dat", sep="|", index=False, encoding="utf-8")
+
+# # 25.07.21(월) DAT_STORE V3 생성(geo_cd) / dat_keyword_search_v3.csv / dat_uj_device_v3.csv 추가
+#
+# datStore = pd.read_csv(DATA_PATH / "dat_store_v2.dat", sep='|', encoding='utf-8')
+# statDongMapping = pd.read_csv(DATA_PATH / "stat_dong_mapping.csv", encoding='cp949')
+#
+# datStore = datStore.merge(statDongMapping[['dong_cd', 'geo_cd']], on='dong_cd', how='left')
+#
+# datStore.to_csv(DATA_PATH / "dat_store_v3.csv", index=False, encoding='utf-8-sig')
+# datStore.to_csv(DATA_PATH / "dat_store_v3.dat", sep="|", index=False, encoding="utf-8")
+#
+# datKeywordSearch = pd.read_csv(DATA_PATH / "dat_keyword_search_v3.csv", encoding='cp949')
+# datUjDevice = pd.read_csv(DATA_PATH / "dat_uj_device_v3.csv", encoding='cp949')
+#
+# datKeywordSearch.to_csv(DATA_PATH / "dat_keyword_search_v3.dat", sep='|', encoding='utf-8')
+# datUjDevice.to_csv(DATA_PATH / "dat_uj_device_v3.dat", sep='|', encoding='utf-8')

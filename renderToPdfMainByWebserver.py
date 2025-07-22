@@ -89,7 +89,7 @@ def render_with_js_and_export_pdf(brnd_no: str):
         page.on("requestfailed", lambda req: print(f"[404] {req.url}"))
 
         # HTML 열기 (fetch가 작동하려면 http://로 열어야 함)
-        page.goto(f"http://localhost:8000/resources/index.html")
+        page.goto(f"http://localhost:8000/temp/index.html")
 
         # JSON이 렌더링될 때까지 대기
         page.wait_for_timeout(5000)
