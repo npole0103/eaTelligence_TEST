@@ -138,5 +138,30 @@ SERPER_API_KEY = os.getenv("SERPER_API_KEY")
 # datKeywordSearch = pd.read_csv(DATA_PATH / "dat_keyword_search_v3.csv", encoding='cp949')
 # datUjDevice = pd.read_csv(DATA_PATH / "dat_uj_device_v3.csv", encoding='cp949')
 #
-# datKeywordSearch.to_csv(DATA_PATH / "dat_keyword_search_v3.dat", sep='|', encoding='utf-8')
-# datUjDevice.to_csv(DATA_PATH / "dat_uj_device_v3.dat", sep='|', encoding='utf-8')
+# datKeywordSearch.to_csv(DATA_PATH / "dat_keyword_search_v3.dat", sep='|', index=False, encoding='utf-8')
+# datUjDevice.to_csv(DATA_PATH / "dat_uj_device_v3.dat", sep='|', index=False, encoding='utf-8')
+
+# # 25.07.23(수) 컨버팅
+# statDongMapping = pd.read_csv(DATA_PATH / "stat_dong_mapping.csv", encoding='cp949')
+# statDongMapping.to_csv(DATA_PATH / "stat_dong_mapping_v3.dat", sep='|', index=False, encoding='utf-8')
+# statDongMapping.to_csv(DATA_PATH / "stat_dong_mapping_v3.csv", index=False, encoding='utf-8-sig')
+#
+# datKeywordSearch = pd.read_csv(DATA_PATH / "dat_keyword_search_v3.dat", sep='|', encoding='utf-8')
+# datKeywordSearch.to_csv(DATA_PATH / "dat_keyword_search_v3.csv", index=False, encoding='utf-8-sig')
+#
+# datUjDevice = pd.read_csv(DATA_PATH / "dat_uj_device_v3.dat", sep='|', encoding='utf-8')
+# datUjDevice.to_csv(DATA_PATH / "dat_uj_device_v3.csv", index=False, encoding='utf-8-sig')
+
+# # 25.07.23(수) 재변환
+# datKeywordSearch = pd.read_csv(DATA_PATH / "dat_keyword_search_v3.csv", encoding='utf-8')
+# datKeywordSearch.to_csv(DATA_PATH / "dat_keyword_search_v3.dat", index=False, sep='|', encoding='utf-8')
+#
+# datUjDevice = pd.read_csv(DATA_PATH / "dat_uj_device_v3.csv", encoding='utf-8')
+# datUjDevice.to_csv(DATA_PATH / "dat_uj_device_v3.dat", index=False, encoding='utf-8-sig')
+
+# 25.07.23(수) ML 버전 변환
+brandStat = pd.read_csv(DATA_PATH / "brand_stat_v4.csv", encoding='utf-8')
+datSalesAppend = pd.read_csv(DATA_PATH / "dat_sales_append_v4.csv", encoding='utf-8')
+
+brandStat.to_csv(DATA_PATH / "brand_stat_v4.dat", index=False, encoding='utf-8-sig')
+datSalesAppend.to_csv(DATA_PATH / "dat_sales_append_v4.dat", index=False, encoding='utf-8-sig')

@@ -29,7 +29,14 @@ logging.basicConfig(
 )
 
 # 글로벌 변수
-ROOT_PATH = Path.cwd()
+def find_project_root(start_path: Path = Path(__file__).resolve()) -> Path:
+    for parent in [start_path, *start_path.parents]:
+        if any((parent / marker).exists() for marker in [".git", "pyproject.toml", "requirements.txt"]):
+            return parent
+    raise RuntimeError("프로젝트 루트를 찾을 수 없습니다.")
+
+ROOT_PATH = find_project_root()
+#ROOT_PATH = Path.cwd()
 DATA_PATH = ROOT_PATH / 'dat'
 PDF_PATH = ROOT_PATH / 'pdf'
 RESOURCE_PATH = ROOT_PATH / 'resources'

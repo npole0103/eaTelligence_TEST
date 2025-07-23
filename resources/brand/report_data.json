@@ -143,8 +143,10 @@
 
   "page4": {
     "uj3_store_cnt": "36개",
-    "uj3_store_cnt_rank": "3위 높음",
-    "uj3_amt_rank": "12위 보통",
+    "uj3_store_cnt_rank": "3위",
+    "uj3_store_cnt_priority": "높음",
+    "uj3_amt_rank": "12위",
+    "uj3_amt_priority": "보통",
 
     "store_data": [
       { "rank": 1, "name": "이삭토스트", "value": 411 },
