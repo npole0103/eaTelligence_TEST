@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- css -->
+    <link rel="stylesheet" href="./src/css/reset.css" />
+    <link rel="stylesheet" href="./src/css/common.css" />
+    <link rel="stylesheet" href="./src/css/contents.css" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.6.0/echarts.min.js"
+      integrity="sha512-XSmbX3mhrD2ix5fXPTRQb2FwK22sRMVQTpBP2ac8hX7Dh/605hA2QDegVWiAvZPiXIxOV0CbkmUjGionDpbCmw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <!-- util & geo -->
+    <script src="./src/koreaGeo.js" defer></script>
+    <script src="./src/utilfunc.js" defer></script>
+    <script src="./src/cardRender.js" defer></script>
+    <script src="./src/renderComponent.js" defer></script>
+    <!-- 각 차트 -->
+    <script src="./src/charts/barChart.js" defer></script>
+    <script src="./src/charts/donutChart.js" defer></script>
+    <script src="./src/charts/geoChart.js" defer></script>
+    <script src="./src/charts/horizontalBarChart.js" defer></script>
+    <script src="./src/charts/radarChart.js" defer></script>
+
+    <script src="./src/render.js" defer></script>
+    <title>리포트</title>
+  </head>
+  <body>
+    <div id="template-root">
+      <!-- 페이지1 -->
+      <section class="paper" id="firstPage">
+        <div class="page-info">
+          <span class="page-info__page-number">01/05</span>
+          <span class="page-info__brand-name">{{meta.brnd_nm}}</span>
+        </div>
+        <div class="page-header">
+          <div class="page-header__main">
+            <div class="page-header__thumb">
+              <img src="./public/logo.png" alt="logo" />
+            </div>
+            <div class="page-header__info">
+              <h1 class="page-header__title">{{meta.brnd_nm}}</h1>
+              <p class="page-header__category">
+                <span class="page-header__category-item">{{meta.uj3_nm}}</span>
+              </p>
+            </div>
+          </div>
+          <div class="page-header__meta">
+            <span class="page-header__based-date">2024년 12월 기준</span>
+          </div>
+        </div>
+        <div class="ai-summary ai-summary__head">
+          <img
+            class="ai-summary__head--icon"
+            src="./public/icon-star-two.svg"
+            alt="아이콘"
+          />
+          <p class="ai-summary__head--desc">{{page1.ai_summary}}</p>
+        </div>
+        <div class="section__wrap">
+          <section class="section__wrap--group">
+            <div class="content-block">
+              <div class="section__title">
+                <h3>주요 지표</h3>
+              </div>
+              <div class="card__wrap">
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">점포 수</h4>
+                    <span class="card__item--value">{{page1.store_cnt}}</span>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">연매출</h4>
+                    <span class="card__item--value">{{meta.y_total_amt}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card__wrap" style="margin-top: 10px">
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">업계 내 점포 점유율</h4>
+                    <span class="card__item--value"
+                      >{{meta.market_amt_rate}}</span
+                    >
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">업계 내 매출 점유율</h4>
+                    <span class="card__item--value"
+                      >{{meta.market_store_cnt_rate}}</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="card__wrap" style="margin-top: 10px">
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">연간 개업 수</h4>
+                    <span class="card__item--value">{{meta.y_open_store}}</span>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">연간 폐업 수</h4>
+                    <span class="card__item--value"
+                      >{{meta.y_close_store}}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="content-block" style="margin-top: 15px">
+              <div class="section__title">
+                <h3>기본 정보</h3>
+              </div>
+              <ul class="basic-info__list">
+                <li class="basic-info__item">
+                  <span class="basic-info__label">법인명</span>
+                  <span class="basic-info__value"
+                    >{{brnd_rprsv_nm.fchhq_nm}}</span
+                  >
+                </li>
+                <li class="basic-info__item">
+                  <span class="basic-info__label">대표자명</span>
+                  <span class="basic-info__value">{{meta.brnd_rprsv_nm}}</span>
+                </li>
+                <li class="basic-info__item">
+                  <span class="basic-info__label">대표 연락처</span>
+                  <span class="basic-info__value">{{meta.tel_no}}</span>
+                </li>
+                <li class="basic-info__item">
+                  <span class="basic-info__label">법인번호</span>
+                  <span class="basic-info__value">{{meta.brnd_brno}}</span>
+                </li>
+                <li class="basic-info__item">
+                  <span class="basic-info__label">설립일</span>
+                  <span class="basic-info__value">{{meta.ymd_brnd}}</span>
+                </li>
+                <li class="basic-info__item">
+                  <span class="basic-info__label">총 운영기간</span>
+                  <span class="basic-info__value">{{meta.opr_duration}}</span>
+                </li>
+              </ul>
+            </div>
+          </section>
+          <section class="section__wrap--group">
+            <div class="content-block">
+              <div class="section__title">
+                <!-- 멘트 변경 -->
+                <h3>종합 진단</h3>
+                <img src="./public/icon-star-two.svg" alt="icon" />
+              </div>
+              <div class="brand-competitiveness-chart">
+                <div
+                  id="brandCompetitivenessRadar"
+                  style="width: 100%; height: 224px"
+                ></div>
+
+                <div class="brand-analysis-card-grid">
+                  <div class="brand-analysis-card">
+                    <div class="brand-analysis-card__title">
+                      <h4>확장성</h4>
+                      <div class="stars">
+                        <img class="star" src="public/icon-star-filled.svg" />
+                        <img class="star" src="public/icon-star-filled.svg" />
+                        <img class="star" src="public/icon-star-filled.svg" />
+                        <img class="star" src="public/icon-star-filled.svg" />
+                        <img class="star" src="public/icon-star-filled.svg" />
+                      </div>
+                    </div>
+                    <!-- 수정 : 멘트 순서 변경 -->
+                    <ul class="brand-analysis-card__list">
+                      <li>업계 내 점포 점유율 : {{meta.market_amt_rate}}</li>
+                      <li>
+                        업계 내 매출 점유율 : {{meta.market_store_cnt_rate}}
+                        (업계 내 {{meta.market_store_cnt_rank}})
+                      </li>
+                      <li>OKPOS 관점 고객사 영업 확장 가능성</li>
+                    </ul>
+                  </div>
+                  <div class="brand-analysis-card">
+                    <!-- 수정 : 수익성 , 안정성 위치 변경 -->
+                    <div class="brand-analysis-card__title">
+                      <h4>수익성</h4>
+                      <div class="stars">
+                        <img class="star" src="public/icon-star-filled.svg" />
+                        <img class="star" src="public/icon-star-filled.svg" />
+                        <img class="star" src="public/icon-star-filled.svg" />
+                        <img class="star" src="public/icon-star-filled.svg" />
+                        <img class="star" src="public/icon-star-filled.svg" />
+                      </div>
+                    </div>
+                    <!-- 수정 : 멘트 변경 -->
+                    <ul class="brand-analysis-card__list">
+                      <li>매출액 : {{meta.y_total_amt}}</li>
+                      <li>
+                        업계 내 매출 상위 1등급 점포 비율 :
+                        {{meta.amt_top1_store_rate}}
+                      </li>
+                      <li>해당 브랜드 관점의 매출 경쟁력</li>
+                    </ul>
+                  </div>
+                  <div class="brand-analysis-card">
+                    <div class="brand-analysis-card__title">
+                      <h4>안정성</h4>
+                      <div class="stars">
+                        <img class="star" src="public/icon-star-filled.svg" />
+                        <img class="star" src="public/icon-star-filled.svg" />
+                        <img class="star" src="public/icon-star-filled.svg" />
+                        <img class="star" src="public/icon-star-filled.svg" />
+                        <img class="star" src="public/icon-star-filled.svg" />
+                      </div>
+                    </div>
+                    <ul class="brand-analysis-card__list">
+                      <li>평균 점포 수명 : {{meta.y_store_survival}}</li>
+                      <li>
+                        매출 증감률 : 연 {{meta.y_amg_inc_dec_rate}}, 점포
+                        증감률 : 연 {{meta.y_store_cnt_inc_dec_rate}}
+                      </li>
+                      <li>브랜드 소속 점포의 안정성 및 지속 가능성</li>
+                    </ul>
+                  </div>
+                  <div class="brand-analysis-card">
+                    <div class="brand-analysis-card__title">
+                      <h4>잠재성</h4>
+                      <div class="stars">
+                        <img class="star" src="public/icon-star-filled.svg" />
+                        <img class="star" src="public/icon-star-filled.svg" />
+                        <img class="star" src="public/icon-star-filled.svg" />
+                        <img class="star" src="public/icon-star-filled.svg" />
+                        <img class="star" src="public/icon-star-filled.svg" />
+                      </div>
+                    </div>
+                    <ul class="brand-analysis-card__list">
+                      <li>포털 검색량 : 연 {{meta.y_portal_search_cnt}}</li>
+                      <li>
+                        개업 현황 : 연 {{meta.y_open_store}}, 폐업 현황 : 연
+                        {{meta.y_close_store}}
+                      </li>
+                      <li>소셜 바이럴 및 점포 증감에 따른 잠재 가능성</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- 페이지2 -->
+      <section class="paper" id="secondPage">
+        <div class="page-info">
+          <span class="page-info__page-number">02/05</span>
+          <span class="page-info__brand-name">{{meta.brnd_nm}}</span>
+        </div>
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title">점포 현황</h1>
+            <span class="page-header__based-date">2024년도 12개월 기준</span>
+          </div>
+        </div>
+        <div class="ai-summary" style="margin-top: 10px; margin-bottom: 20px">
+          <div class="ai-summary__title">
+            <img src="./public/icon-star-two.svg" />
+            <h4>AI 요약</h4>
+          </div>
+          <p class="ai-summary__desc">{{page2.ai_summary}}</p>
+        </div>
+        <div class="section__wrap">
+          <section class="section__wrap--group">
+            <div class="content-block">
+              <div class="section__title">
+                <h3>점포 수 개요</h3>
+                <span>2024년 12월 기준</span>
+              </div>
+              <div
+                class="card__wrap"
+                style="margin-top: 10px; margin-bottom: 10px"
+              >
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">점포 수</h4>
+                    <span class="card__item--value">{{page2.store_cnt}}</span>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">연간 점포 증감 수</h4>
+                    <span class="card__item--value"
+                      >{{page2.y_diff_store_cnt}}</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="card__wrap">
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">평균 점포 수명</h4>
+                    <span class="card__item--value"
+                      >{{meta.y_store_survival}}</span
+                    >
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">총 운영기간</h4>
+                    <span class="card__item--value"
+                      >{{page2.opr_duration}}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="content-block" style="margin-top: 48px">
+              <div class="section__title" style="margin-bottom: 10px">
+                <h3>점포 수 추이</h3>
+                <span>2024년 12월 기준</span>
+              </div>
+              <div
+                id="storeCountChart"
+                style="width: 100%; height: 190px"
+              ></div>
+            </div>
+
+            <div class="content-block">
+              <table class="growth-table">
+                <thead class="growth-table__head">
+                  <tr class="growth-table__row">
+                    <th class="growth-table__cell growth-table__cell--header">
+                      a. 개업 수
+                    </th>
+                    <th class="growth-table__cell growth-table__cell--header">
+                      b. 폐업 수
+                    </th>
+                    <th class="growth-table__cell growth-table__cell--header">
+                      c. 총 증감 수(a-b)
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="growth-table__body">
+                  <tr class="growth-table__row">
+                    <td class="growth-table__cell">{{page2.y_open_store}}</td>
+                    <td class="growth-table__cell">{{page2.y_close_store}}</td>
+                    <td class="growth-table__cell">
+                      {{page2.y_diff_store_cnt}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="section__wrap--group">
+            <div class="content-block">
+              <div class="section__title" style="margin-bottom: 10px">
+                <h3>점포 분포 현황</h3>
+                <span>2024년 12월 기준</span>
+              </div>
+              <section class="geo-chart">
+                <div
+                  id="storeGeoChart"
+                  style="width: 100%; height: 264px"
+                ></div>
+              </section>
+            </div>
+            <div class="content-block">
+              <div
+                class="section__title"
+                style="margin-bottom: 10px; margin-top: 29px"
+              >
+                <h3>지역별 분포 순위</h3>
+                <span>2024년 12월 기준</span>
+              </div>
+              <div class="rank-box rank-box--highsales" id="storeRankList">
+                <ul class="rank-box__list">
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">1위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">2위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">3위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">4위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">5위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                </ul>
+                <ul class="rank-box__list">
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">6위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">7위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">8위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">9위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">10위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <p class="section__sub-title section__sub-title--desc">
+              *점포 수가 10개 미만인 경우, 지역과 매출액이 ‘ - ‘으로 노출될 수
+              있습니다.
+            </p>
+          </section>
+        </div>
+      </section>
+
+      <!-- 페이지3 -->
+      <section class="paper" id="thirdPage">
+        <div class="page-info">
+          <span class="page-info__page-number">03/05</span>
+          <span class="page-info__brand-name">{{meta.brnd_nm}}</span>
+        </div>
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title">매출 현황</h1>
+            <span class="page-header__based-date">2024년도 12개월 기준</span>
+          </div>
+        </div>
+        <div class="ai-summary" style="margin-top: 10px; margin-bottom: 38px">
+          <div class="ai-summary__title">
+            <img src="./public/icon-star-two.svg" />
+            <h4>AI 요약</h4>
+          </div>
+          <p class="ai-summary__desc">{{page3.ai_summary}}</p>
+        </div>
+        <div class="section__wrap">
+          <section class="section__wrap--group">
+            <div class="content-block">
+              <div class="section__title">
+                <h3>매출 개요</h3>
+                <span>2024년 12월 기준(NICE지급결제 3사)</span>
+              </div>
+              <p class="section__sub-title">
+                *점포당 매출액은 지불 여력과 제품 수요 수준을 유추할 수
+                있습니다.
+              </p>
+              <div
+                class="card__wrap"
+                style="margin-top: 10px; margin-bottom: 10px"
+              >
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">연 매출액</h4>
+                    <span class="card__item--value">{{meta.y_total_amt}}</span>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">월 평균 매출액</h4>
+                    <span class="card__item--value">{{page3.m_avg_amt}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card__wrap">
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">점포당 연 평균 매출</h4>
+                    <span class="card__item--value"
+                      >{{page3.y_avg_amt_per_store}}</span
+                    >
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">점포당 월 평균 매출액</h4>
+                    <span class="card__item--value"
+                      >{{page3.m_avg_amt_per_store}}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="content-block" style="margin-top: 46px">
+              <div class="section__title" style="margin-bottom: 10px">
+                <h3>매출 추이</h3>
+                <span>2024년 12월 기준</span>
+              </div>
+              <div
+                id="salesCountChart"
+                style="width: 100%; height: 190px"
+              ></div>
+            </div>
+          </section>
+
+          <section class="section__wrap--group">
+            <div class="content-block">
+              <div class="section__title">
+                <h3>업종 내 점포 매출 비교</h3>
+                <span>2024년 12월 기준(NICE지급결제 3사)</span>
+              </div>
+              <p class="section__sub-title">
+                *상위 1~2등급 비율이 높을수록 동일 업종 내 경쟁력이 높다고
+                판단할 수 있습니다.
+              </p>
+              <div
+                class="card__wrap"
+                style="margin-top: 10px; margin-bottom: 10px"
+              >
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">업종 기준</h4>
+                    <span class="card__item--value">{{meta.uj3_nm}}</span>
+                  </div>
+                </div>
+              </div>
+              <!-- 카드 하나 추가 & 멘트 변경 -->
+              <div class="card__wrap">
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">매출 상위 1등급 점포</h4>
+                    <span class="card__item--value"
+                      >{{meta.amt_top1_store_rate}}</span
+                    >
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">매출 상위 2등급 점포</h4>
+                    <span class="card__item--value"
+                      >{{meta.amt_top2_store_rate}}</span
+                    >
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">매출 상위 3등급 점포</h4>
+                    <span class="card__item--value"
+                      >{{meta.amt_top3_store_rate}}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="content-block" style="margin-top: 46px">
+              <div class="section__title" style="margin-bottom: 10px">
+                <h3>지역별 매출 순위</h3>
+                <span>2024년 12월 기준</span>
+              </div>
+              <div class="rank-box rank-box--highsales" id="saleRankList">
+                <ul class="rank-box__list">
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">1위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">2위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">3위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">4위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">5위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                </ul>
+                <ul class="rank-box__list">
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">6위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">7위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">8위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">9위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                  <li class="rank-box__item">
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--primary">10위</span>
+                      <span class="rank-box__item--label">서울시 마포구</span>
+                    </div>
+                    <div class="rank-box__item--section">
+                      <span class="rank-box__item--value">11개</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <p class="section__sub-title section__sub-title--desc">
+              *점포 수가 10개 미만인 경우, 지역과 매출액이 ‘ - ‘으로 노출될 수
+              있습니다.
+            </p>
+          </section>
+        </div>
+      </section>
+
+      <!-- 페이지4 -->
+      <section class="paper" id="fourthPage">
+        <div class="page-info">
+          <span class="page-info__page-number">04/05</span>
+          <span class="page-info__brand-name">{{meta.brnd_nm}}</span>
+        </div>
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title">동일 업종 비교</h1>
+            <span class="page-header__based-date">2024년도 12개월 기준</span>
+          </div>
+        </div>
+        <div class="content-block" style="margin-bottom: 30px">
+          <div class="card__wrap card__wrap--rank" style="margin-top: 10px">
+            <div class="card">
+              <div class="card__item">
+                <h4 class="card__item--title">업종 기준</h4>
+                <span class="card__item--value">{{meta.uj3_nm}}</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card__item">
+                <h4 class="card__item--title">동일 업종 브랜드 수</h4>
+                <span class="card__item--value">{{page4.uj3_store_cnt}}</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card__item">
+                <h4 class="card__item--title">점포 수 순위</h4>
+                <div style="display: flex; gap: 6px">
+                  <span class="card__item--value"
+                    >{{page4.uj3_store_cnt_rank}}</span
+                  >
+                  <span class="card__item--value"
+                    >{{page4.uj3_store_cnt_priority}}</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card__item">
+                <h4 class="card__item--title">연매출 순위</h4>
+                <div style="display: flex; gap: 6px">
+                  <span class="card__item--value">{{page4.uj3_amt_rank}}</span>
+                  <span class="card__item--value"
+                    >{{page4.uj3_amt_priority}}</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section__wrap">
+          <section class="section__wrap--group">
+            <div class="content-block">
+              <div class="section__title" style="margin-bottom: 10px">
+                <h3>점포 수 순위</h3>
+                <span>2024년 12월 기준</span>
+              </div>
+
+              <div id="storeRankChart" style="width: 100%; height: 210px"></div>
+            </div>
+
+            <div class="content-block" style="margin-top: 51px">
+              <div class="section__title" style="margin-bottom: 10px">
+                <h3>동일 업종 ‘무인주문기’ 이용 현황</h3>
+                <span>2024년 12월 기준(출처 : 통계청)</span>
+              </div>
+              <div class="ai-summary">
+                <div class="ai-summary__title">
+                  <div class="ai-summary__title--main">
+                    <h4>참고 사항</h4>
+                    <img src="./public/icon-star-two.svg" />
+                  </div>
+                  <div class="ai-summary__title--desc">
+                    피자·햄버거·샌드위치 및 유사 음식점업 기준
+                  </div>
+                </div>
+                <ul class="ai-summary__desc ai-summary__list" id="">
+                  <li class="ai-summary__item">{{page4.ai_summary.0}}</li>
+                  <li class="ai-summary__item">{{page4.ai_summary.1}}</li>
+                  <li class="ai-summary__item">{{page4.ai_summary.2}}</li>
+                  <li class="ai-summary__item">{{page4.ai_summary.3}}</li>
+                  <li class="ai-summary__item">{{page4.ai_summary.4}}</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section class="section__wrap--group">
+            <div class="content-block">
+              <div class="section__title" style="margin-bottom: 10px">
+                <h3>매출 순위</h3>
+                <span>2024년 12월 기준</span>
+              </div>
+
+              <div
+                id="storeSaleRankChart"
+                style="width: 100%; height: 210px"
+              ></div>
+            </div>
+
+            <div class="content-block" style="margin-top: 51px">
+              <div class="card__wrap" style="margin-top: 37px">
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">키오스크</h4>
+                    <span class="card__item--value">{{page4.kiosk_rate}}</span>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">태블릿PC</h4>
+                    <span class="card__item--value">{{page4.tablet_rate}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card__wrap" style="margin-top: 10px">
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">휴대폰</h4>
+                    <span class="card__item--value">{{page4.phone_rate}}</span>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card__item">
+                    <h4 class="card__item--title">기타</h4>
+                    <span class="card__item--value">{{page4.etc_rate}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- 페이지5 -->
+      <section class="paper" id="fifthPage">
+        <div class="page-info">
+          <span class="page-info__page-number">05/05</span>
+          <span class="page-info__brand-name">{{meta.brnd_nm}}</span>
+        </div>
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title">결론</h1>
+            <span class="page-header__based-date">2024년도 12개월 기준</span>
+          </div>
+        </div>
+
+        <div class="section__wrap">
+          <section class="section__wrap--group">
+            <div class="content-block">
+              <div class="section__title" style="margin-top: 22px">
+                <h3>추천 전략</h3>
+                <img src="./public/icon-star-two.svg" />
+              </div>
+              <p class="section__sub-title">
+                *점포당 매출액은 지불 여력과 제품 수요 수준을 유추할 수
+                있습니다.
+              </p>
+            </div>
+            <div class="content-block" style="margin-top: 12px">
+              <div class="ai-summary">
+                <ul class="ai-summary__desc ai-summary__list">
+                  <li class="ai-summary__item">{{page5.ai_summary.0}}</li>
+                  <li class="ai-summary__item">{{page5.ai_summary.1}}</li>
+                  <li class="ai-summary__item">{{page5.ai_summary.2}}</li>
+                  <li class="ai-summary__item">{{page5.ai_summary.3}}</li>
+                  <li class="ai-summary__item">{{page5.ai_summary.4}}</li>
+                </ul>
+
+                <ul class="ai-summary__desc ai-summary__list">
+                  <li class="ai-summary__item">{{page5.ai_summary.5}}</li>
+                  <li class="ai-summary__item">{{page5.ai_summary.6}}</li>
+                  <li class="ai-summary__item">{{page5.ai_summary.7}}</li>
+                  <li class="ai-summary__item">{{page5.ai_summary.8}}</li>
+                  <li class="ai-summary__item">{{page5.ai_summary.9}}</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+          <div class="section-group">
+            <section class="section__wrap--group">
+              <div class="content-block">
+                <div class="section__title" style="margin-bottom: 10px">
+                  <h3>POS 영업 타겟 예측</h3>
+                  <span>2024년 12월 기준</span>
+                </div>
+
+                <div class="pos-sale-target-chart">
+                  <div
+                    id="posSaleTargetChart"
+                    style="width: 100%; height: 212px"
+                  ></div>
+                </div>
+                <p class="section__sub-title section__sub-title--desc">
+                  *본 수치는 OKPOS POS 제품 기준이며, 미사용 점포 수는 공정위
+                  등록 가맹점 수에서 NICE 결제 가맹점을 제외하여 추정한
+                  값입니다. 실제와 차이가 있을 수 있어 추가 확인이 필요합니다.
+                </p>
+              </div>
+            </section>
+            <section class="section__wrap--group">
+              <div class="content-block">
+                <div class="section__title" style="margin-bottom: 10px">
+                  <h3>브랜드 인지도</h3>
+                  <span>네이버 검색/블로그/카페 기준(최근 30일)</span>
+                </div>
+                <div class="card__wrap">
+                  <div class="card">
+                    <div class="card__item">
+                      <h4 class="card__item--title">키워드 검색량</h4>
+                      <span class="card__item--value"
+                        >{{page5.keyword_search_cnt}}</span
+                      >
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card__item">
+                      <h4 class="card__item--title">블로그 발행량</h4>
+                      <span class="card__item--value"
+                        >{{page5.blog_post_cnt}}</span
+                      >
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card__item">
+                      <h4 class="card__item--title">카페 발행량</h4>
+                      <span class="card__item--value"
+                        >{{page5.cafe_post_cnt}}</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="content-block" style="margin-top: 24px">
+                <div class="section__title" style="margin-bottom: 10px">
+                  <h3>AI 뉴스</h3>
+                  <img src="./public/icon-star-two.svg" alt="icon" />
+                  <span>최근 1년 이내 언론보도</span>
+                </div>
+                <div class="ai-summary" style="height: 82px">
+                  <p class="ai-summary__desc">{{page5.ai_news}}</p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

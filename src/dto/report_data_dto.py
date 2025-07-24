@@ -21,7 +21,7 @@ class SalesTrend:
 
 
 @dataclass
-class AmtRankByCity:
+class RankByCity:
     rank: int
     region: str
     store_count: int
@@ -84,7 +84,7 @@ class Page2:
     opr_duration: str
     regionData: List[RegionData]
     store_trend: StoreTrend
-
+    store_cnt_rank_by_city: List[RankByCity]
 
 @dataclass
 class Page3:
@@ -92,7 +92,7 @@ class Page3:
     m_avg_amt: str
     y_avg_amt_per_store: str
     m_avg_amt_per_store: str
-    amt_rank_by_city: List[AmtRankByCity]
+    amt_rank_by_city: List[RankByCity]
     sales_trend: SalesTrend
 
 
