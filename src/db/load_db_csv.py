@@ -1,5 +1,6 @@
 import pandas as pd
-from src.db import db_config as config
+from src.config import db_config as config
+
 
 def load_excel(file_key: str) -> pd.DataFrame:
     path = config.EXCEL_FILES[file_key]

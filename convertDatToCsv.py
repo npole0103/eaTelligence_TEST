@@ -159,9 +159,22 @@ SERPER_API_KEY = os.getenv("SERPER_API_KEY")
 # datUjDevice = pd.read_csv(DATA_PATH / "dat_uj_device_v3.csv", encoding='utf-8')
 # datUjDevice.to_csv(DATA_PATH / "dat_uj_device_v3.dat", index=False, encoding='utf-8-sig')
 
-# 25.07.23(수) ML 버전 변환
-brandStat = pd.read_csv(DATA_PATH / "brand_stat_v4.csv", encoding='utf-8')
-datSalesAppend = pd.read_csv(DATA_PATH / "dat_sales_append_v4.csv", encoding='utf-8')
+# # 25.07.23(수) ML 버전 변환
+# brandStat = pd.read_csv(DATA_PATH / "brand_stat_v4.csv", encoding='utf-8')
+# datSalesAppend = pd.read_csv(DATA_PATH / "dat_sales_append_v4.csv", encoding='utf-8')
+#
+# brandStat.to_csv(DATA_PATH / "brand_stat_v4.dat", index=False, encoding='utf-8-sig')
+# datSalesAppend.to_csv(DATA_PATH / "dat_sales_append_v4.dat", index=False, encoding='utf-8-sig')
 
-brandStat.to_csv(DATA_PATH / "brand_stat_v4.dat", index=False, encoding='utf-8-sig')
-datSalesAppend.to_csv(DATA_PATH / "dat_sales_append_v4.dat", index=False, encoding='utf-8-sig')
+# # 25.07.25(금) DAT BRND brno 재생성
+# datBrndV3 = pd.read_csv(DATA_PATH / "dat_brnd_v3.csv", encoding='utf-8-sig')
+# datBrnd = pd.read_csv(DATA_PATH / "dat_brnd.dat", sep="|", encoding='utf-8')
+#
+# datBrndV3 = datBrndV3.merge(datBrnd[['fchhq_no', 'brnd_no', 'brno']], on=['fchhq_no', 'brnd_no'], how='left')
+#
+# datBrndV3['brno'] = datBrndV3['brno'].astype('Int64')
+# datBrndV3['ymd_brnd'] = datBrndV3['ymd_brnd'].astype('Int64')
+# datBrndV3['store_cnt'] = datBrndV3['store_cnt'].astype('Int64')
+#
+# datBrndV3.to_csv(DATA_PATH / "dat_brnd_v4.dat", sep="|", index=False, encoding="utf-8")
+# datBrndV3.to_csv(DATA_PATH / "dat_brnd_v4.csv", index=False, encoding='utf-8-sig')
