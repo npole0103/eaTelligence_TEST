@@ -30,3 +30,20 @@ def formatMonthsToYM(months: int) -> str:
     years = months // 12
     remaining_months = months % 12
     return f"{years}년 {remaining_months}개월"
+
+def formatPercent(data: int | str) -> str:
+	if data is None:
+		return "0.0%"
+
+	return f"{data:.1f}%"
+
+def formatCountUnit(count: int | None) -> str:
+    if count is None:
+        return "0개"
+    return f"{count}개"
+
+def formatRankWithTotal(rank: int, total: int) -> str:
+    return f"{rank}/{total} 위"
+
+def formatRank(rank: int) -> str:
+    return f"{rank}위"

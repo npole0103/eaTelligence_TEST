@@ -9,8 +9,10 @@
     "brnd_brno": "T117-23403-30",
     "ymd_brnd": "T2019년 02월 17일",
     "opr_duration": "T5년 7개월",
+    "brnd_store_cnt": "T114개",
     "y_total_amt": "T24.7억원",
 
+    "market_uj3_total": "T36개",
     "market_amt_rate": "T11.2%",
     "market_store_cnt_rate": "T7.4%",
     "market_amt_rank": "T3위",
@@ -23,6 +25,7 @@
     "amt_top1_store_rate": "T53.7%",
     "amt_top2_store_rate": "T46.2%",
     "amt_top3_store_rate": "T0.1%",
+    "amt_top4_store_rate": "T0.9%",
 
     "y_portal_search_cnt": "11,524",
 
@@ -32,18 +35,13 @@
 
   "page1": {
     "ai_summary": "T동물복지 유정란과 프리미엄 통식빵으로 만든 수제 에그 샌드위치 전문점",
-    "store_cnt": "T114",
     "brandData": [85, 90, 70, 10],
     "averageData": [10, 65, 55, 70]
   },
 
   "page2": {
     "ai_summary": "T에그셀런트는 점포 수는 업계 3위 수준이지만, 매출 점유율은 2.4%로 매우 낮아 매장당 매출 효율이 현저히 떨어지고 있는 상황이에요.현재 점포 확장 전략보다는 단일 매장의 수익성 개선이 시급한 상황이라고 판단할 수 있어요.",
-    "store_cnt": "T114",
-    "y_open_store": "T4개",
-    "y_close_store": "T1개",
     "y_diff_store_cnt": "T3개",
-    "opr_duration": "T5년 7개월",
     "regionData": [
       { "name": "11110", "value": 120 },
       { "name": "22010", "value": 550 },
@@ -214,10 +212,7 @@
   },
 
   "page4": {
-    "uj3_store_cnt": "36개",
-    "uj3_store_cnt_rank": "3위",
     "uj3_store_cnt_priority": "높음",
-    "uj3_amt_rank": "12위",
     "uj3_amt_priority": "보통",
 
     "store_data": [

@@ -46,8 +46,10 @@ class Meta:
     brnd_brno: str
     ymd_brnd: str
     opr_duration: str
+    brnd_store_cnt: str
     y_total_amt: str
 
+    market_uj3_total: str
     market_amt_rate: str
     market_store_cnt_rate: str
     market_amt_rank: str
@@ -60,6 +62,7 @@ class Meta:
     amt_top1_store_rate: str
     amt_top2_store_rate: str
     amt_top3_store_rate: str
+    amt_top4_store_rate: str
 
     y_portal_search_cnt: str
     y_open_store: str
@@ -69,19 +72,13 @@ class Meta:
 @dataclass
 class Page1:
     ai_summary: str
-    store_cnt: str
     brandData: List[int]
     averageData: List[int]
-
 
 @dataclass
 class Page2:
     ai_summary: str
-    store_cnt: str
-    y_open_store: str
-    y_close_store: str
     y_diff_store_cnt: str
-    opr_duration: str
     regionData: List[RegionData]
     store_trend: StoreTrend
     store_cnt_rank_by_city: List[RankByCity]
@@ -98,10 +95,7 @@ class Page3:
 
 @dataclass
 class Page4:
-    uj3_store_cnt: str
-    uj3_store_cnt_rank: str
     uj3_store_cnt_priority: str
-    uj3_amt_rank: str
     uj3_amt_priority: str
     store_data: List[StoreDataItem]
     sales_data: List[StoreDataItem]

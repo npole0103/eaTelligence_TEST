@@ -1,4 +1,6 @@
-from src.common.customFormatter import formatBrno, formatYmd, formatKoreanCurrency, formatMonthsToYM
+from src.common.customFormatter import formatBrno, formatYmd, formatKoreanCurrency, formatMonthsToYM, formatPercent, \
+	formatCountUnit, formatRank, formatRankWithTotal
+from src.common.dataConverter import rowToObject
 from src.db.load_db_csv import load_excel
 from src.dto.report_data_dto import Meta
 
@@ -6,8 +8,12 @@ from datetime import datetime
 
 datFchhq = load_excel("datFchhq")
 datBrnd = load_excel("datBrnd")
+datStore = load_excel("datStore")
 brandStats = load_excel("brandStats")
 datStore = load_excel("datStore")
+datSales = load_excel("datSales")
+datKeyword = load_excel("datKeyword")
+datSalesAppend = load_excel("datSalesAppend")
 
 # LEFT : PANDAS / RIGHT : DATACLASS
 column_mapping = {
@@ -20,8 +26,10 @@ column_mapping = {
 	"brno": "brnd_brno",
 	"ymd_brnd": "ymd_brnd",
 	"opr_duration": "opr_duration",
+	"brnd_store_cnt": "brnd_store_cnt",
 	"y_total_amt": "y_total_amt",
 
+	"market_uj3_total": "market_uj3_total",
 	"market_amt_rate": "market_amt_rate",
 	"market_store_cnt_rate": "market_store_cnt_rate",
 	"market_amt_rank": "market_amt_rank",
@@ -34,19 +42,13 @@ column_mapping = {
 	"amt_top1_store_rate": "amt_top1_store_rate",
 	"amt_top2_store_rate": "amt_top2_store_rate",
 	"amt_top3_store_rate": "amt_top3_store_rate",
+	"amt_top4_store_rate": "amt_top4_store_rate",
 
 	"y_portal_search_cnt": "y_portal_search_cnt",
 
 	"y_open_store": "y_open_store",
 	"y_close_store": "y_close_store"
 }
-
-def rowToMeta(row: dict) -> Meta:
-    mapped = {
-        dc_field: _safe_cast(row.get(pd_col, None))
-        for pd_col, dc_field in column_mapping.items()
-    }
-    return Meta(**mapped)
 
 def addDictToDataClass(dataClass, dict: dict):
     for key, value in dict.items():
@@ -64,7 +66,7 @@ def _safe_cast(value):
 
 def getMetaDefaultData(brnd_no: str) -> Meta:
 	datBrnd_filter = datBrnd[datBrnd['brnd_no'] == brnd_no]
-	meta_instance = rowToMeta(datBrnd_filter.iloc[0].to_dict())
+	meta_instance = rowToObject(datBrnd_filter.iloc[0].to_dict(), Meta, column_mapping)
 
 	return meta_instance
 
@@ -90,6 +92,13 @@ def getElapsedYearsMonths(ymd_brnd: int) -> int:
 
     return years * 12 + months
 
+def getAliveStoreCount(brndNo: str, pivotYm: int) -> int:
+    aliveStores = datStore[
+        (datStore['brnd_no'] == brndNo) &
+        (datStore['ym_end'] > pivotYm)
+    ]
+    return aliveStores.shape[0]
+
 def getYoYTotalAmt(brnd_no: str) -> str:
 	# ① 2024년 1월부터 12월까지 필터링
 	df_2024 = brandStats[(brandStats['brnd_no'] == brnd_no)
@@ -97,7 +106,7 @@ def getYoYTotalAmt(brnd_no: str) -> str:
 						 & (brandStats['ym_sales'] <= 202412)]
 	total_amt = df_2024['amt_avg'].sum()
 
-	return total_amt
+	return int(total_amt)
 
 def marketDataByBranStats(brnd_no: str, pivotYm: str | int):
 	# 1. 대상 브랜드의 업종 코드 찾기
@@ -134,10 +143,11 @@ def marketDataByBranStats(brnd_no: str, pivotYm: str | int):
 
 	# 7. 결과 반환
 	return {
-		'market_amt_rate': f"{amt_avg_pct}%",
-		'market_store_cnt_rate': f"{store_cnt_pct}%",
-		'market_amt_rank': f"{target_amt_rank} / {total_count} 위",
-		'market_store_cnt_rank': f"{target_store_rank} / {total_count} 위"
+		'market_uj3_total': total_count,
+		'market_amt_rate': float(amt_avg_pct),
+		'market_store_cnt_rate': float(amt_avg_pct),
+		'market_amt_rank': target_amt_rank,
+		'market_store_cnt_rank': target_store_rank
 	}
 
 def getAvgStoreLife(brnd_no: str) -> int:
@@ -158,41 +168,189 @@ def getAvgStoreLife(brnd_no: str) -> int:
 	# 4. 평균 수명 (개월)
 	return int(df['duration_months'].mean())
 
-def metaMain(brnd_no: str):
-	meta = getMetaDefaultData(brnd_no)
-	meta.fchhq_nm = getFchhqName(brnd_no)
-	meta.opr_duration = getElapsedYearsMonths(meta.ymd_brnd)
-	meta.y_total_amt = getYoYTotalAmt(brnd_no)
-	market_brand_stats_dict = marketDataByBranStats(brnd_no, 202412)
-	addDictToDataClass(meta, market_brand_stats_dict)
-	meta.y_store_survival = getAvgStoreLife(brnd_no)
+def getYoyChangeRate(brnd_no: str, pivotYm: int | str) -> dict:
+    prevPivotYm = pivotYm - 100  # 1년 전 연월 (예: 202412 → 202312)
 
+    # 1. 필터링
+    this_year = brandStats[(brandStats['brnd_no'] == brnd_no) & (brandStats['ym_sales'] == pivotYm)]
+    last_year = brandStats[(brandStats['brnd_no'] == brnd_no) & (brandStats['ym_sales'] == prevPivotYm)]
+
+    if this_year.empty or last_year.empty:
+        return {
+            'y_amg_inc_dec_rate': None,
+            'y_store_cnt_inc_dec_rate': None
+        }
+
+    # 2. 값 추출
+    amt_avg_now = this_year.iloc[0]['amt_avg']
+    amt_avg_prev = last_year.iloc[0]['amt_avg']
+    store_cnt_now = this_year.iloc[0]['store_cnt']
+    store_cnt_prev = last_year.iloc[0]['store_cnt']
+
+    # 3. 증감률 계산 함수
+    def calc_rate(now, prev) -> float:
+        if prev == 0:
+            return None
+        return round((now - prev) / prev * 100, 1)  # float 퍼센트 반환
+
+    return {
+        'y_amg_inc_dec_rate': float(calc_rate(amt_avg_now, amt_avg_prev)),
+        'y_store_cnt_inc_dec_rate': float(calc_rate(store_cnt_now, store_cnt_prev))
+    }
+
+
+def getAmtTopStoreRates(brnd_no: str, pivotYm: int) -> dict:
+	# 1. 해당 브랜드의 업종 코드 찾기
+	row = brandStats[brandStats['brnd_no'] == brnd_no]
+	if row.empty:
+		return {"error": "브랜드를 찾을 수 없음"}
+
+	uj3_cd = row.iloc[0]['uj3_cd']
+
+	# 2. 업종 전체 기준분포값 찾기
+	dist_row = datSales[(datSales['uj3_cd'] == uj3_cd)
+						& (datSales['ym_sales'] == pivotYm)
+						& (datSales['fchhq_no'].isna())
+						& (datSales['brnd_no'].isna())]
+	if dist_row.empty:
+		print("datSales null")
+		return {"error": "해당 업종의 매출 분위 정보가 없음"}
+
+	pct_25 = dist_row.iloc[0]['all_amt_25pct']
+	pct_50 = dist_row.iloc[0]['all_amt_50pct']
+	pct_75 = dist_row.iloc[0]['all_amt_75pct']
+
+	# # 3. brandStats에서 업종 + 월 데이터만 필터
+	# brand_filtered = brandStats[(brandStats['uj3_cd'] == uj3_cd) &
+	# 							(brandStats['ym_sales'] == pivotYm)]
+	# if brand_filtered.empty:
+	# 	print("datStats null")
+	# 	return {"error": "브랜드의 해당 월 점포 데이터가 없음"}
+	#
+	# # 4. 각 구간별 개수 카운트
+	# total = len(brand_filtered)
+	#
+	# top1 = len(brand_filtered[brand_filtered['amt_avg'] >= pct_25])
+	# top2 = len(brand_filtered[(brand_filtered['amt_avg'] >= pct_50) & (brand_filtered['amt_avg'] < pct_25)])
+	# top3 = len(brand_filtered[(brand_filtered['amt_avg'] >= pct_75) & (brand_filtered['amt_avg'] < pct_50)])
+
+	# 3. brandStats에서 업종 + 월 데이터만 필터
+	datSalesAppend_filtered = datSalesAppend[
+		(datSalesAppend['uj3_cd'] == uj3_cd) &
+		(datSalesAppend['ym_sales'] == pivotYm) &
+		(datSalesAppend['brnd_no'] == brnd_no)]
+
+	if datSalesAppend_filtered.empty:
+		print("datSalesAppend null")
+		return {"error": "브랜드의 해당 월 매출 데이터가 없음"}
+
+	# 4. 각 구간별 개수 카운트
+	total = len(datSalesAppend_filtered)
+
+	top1 = len(datSalesAppend_filtered[datSalesAppend_filtered['zone_amt_avg'] >= pct_25])
+	top2 = len(datSalesAppend_filtered[(datSalesAppend_filtered['zone_amt_avg'] >= pct_50) & (datSalesAppend_filtered['zone_amt_avg'] < pct_25)])
+	top3 = len(datSalesAppend_filtered[(datSalesAppend_filtered['zone_amt_avg'] >= pct_75) & (datSalesAppend_filtered['zone_amt_avg'] < pct_50)])
+	top4 = len(datSalesAppend_filtered[datSalesAppend_filtered['zone_amt_avg'] < pct_75])
+
+	print(total)
+	print(datSalesAppend_filtered)
+	print(pct_25, pct_50, pct_75)
+	print(top1, top2, top3, top4)
+
+	def rate(n) -> float:
+		return round(n / total * 100, 1) if total > 0 else None
+
+	return {
+		"amt_top1_store_rate": rate(top1),
+		"amt_top2_store_rate": rate(top2),
+		"amt_top3_store_rate": rate(top3),
+		"amt_top4_store_rate": rate(top4)
+	}
+
+def getTotalKeywordSearchCount(brndNo: str) -> int:
+    row = datKeyword[datKeyword['brnd_no'] == brndNo]
+
+    if row.empty:
+        return 0  # 또는 None 반환도 가능
+
+    # 문자열 숫자 → 정수로 변환 (쉼표 제거 포함)
+    def toInt(val):
+        if isinstance(val, str):
+            return int(val.replace(",", ""))
+        return int(val)
+
+    keyword = toInt(row.iloc[0]['keyword_cnt'])
+    blog = toInt(row.iloc[0]['blog_cnt'])
+    cafe = toInt(row.iloc[0]['cafe_cnt'])
+
+    return keyword + blog + cafe
+
+def getYoyOpenCloseStore(brndNo: str, pivotYm: int) -> dict:
+    startYm = pivotYm - 100 + 1  # 1년 전 1월부터 포함
+
+    # 1. 필터링
+    df = brandStats[
+        (brandStats['brnd_no'] == brndNo) &
+        (brandStats['ym_sales'] >= startYm) &
+        (brandStats['ym_sales'] <= pivotYm)
+    ]
+
+    # 2. 결측치 처리 후 합산
+    openSum = df['store_open_cnt'].fillna(0).sum()
+    closeSum = df['store_close_cnt'].fillna(0).sum()
+
+    return {
+        'y_open_store': int(openSum),
+        'y_close_store': int(closeSum)
+    }
+
+def metaFormatting(meta: Meta) -> Meta:
 	meta.brnd_brno = formatBrno(meta.brnd_brno)
 	meta.ymd_brnd = formatYmd(meta.ymd_brnd)
 	meta.opr_duration = formatMonthsToYM(meta.opr_duration)
 	meta.y_total_amt = formatKoreanCurrency(meta.y_total_amt)
-	meta.y_store_survival = formatMonthsToYM(meta.y_store_survival)
+	meta.brnd_store_cnt = formatCountUnit(meta.brnd_store_cnt)
 
+	meta.market_amt_rate = formatPercent(meta.market_amt_rate)
+	meta.market_store_cnt_rate = formatPercent(meta.market_store_cnt_rate)
+	meta.market_amt_rank = formatRankWithTotal(meta.market_amt_rank, meta.market_uj3_total)
+	meta.market_store_cnt_rank = formatRankWithTotal(meta.market_store_cnt_rank, meta.market_uj3_total)
+	meta.market_uj3_total = formatCountUnit(meta.market_uj3_total)
+
+	meta.y_store_survival = formatMonthsToYM(meta.y_store_survival)
+	meta.y_amg_inc_dec_rate = formatPercent(meta.y_amg_inc_dec_rate)
+	meta.y_store_cnt_inc_dec_rate = formatPercent(meta.y_store_cnt_inc_dec_rate)
+	meta.amt_top1_store_rate = formatPercent(meta.amt_top1_store_rate)
+	meta.amt_top2_store_rate = formatPercent(meta.amt_top2_store_rate)
+	meta.amt_top3_store_rate = formatPercent(meta.amt_top3_store_rate)
+	meta.y_portal_search_cnt = formatCountUnit(meta.y_portal_search_cnt)
+	meta.y_open_store = formatCountUnit(meta.y_open_store)
+	meta.y_close_store = formatCountUnit(meta.y_close_store)
+
+	print("================ META FORMATTING DATA.. ================")
 	print(meta)
 	return meta
 
-# BRD_20190835
-metaMain('BRD_20190835')
+def metaMain(brnd_no: str, pivotYm: int | str):
+	meta = getMetaDefaultData(brnd_no)
+	meta.fchhq_nm = getFchhqName(brnd_no)
+	meta.opr_duration = getElapsedYearsMonths(meta.ymd_brnd)
+	meta.brnd_store_cnt = getAliveStoreCount(brnd_no, pivotYm)
+	meta.y_total_amt = getYoYTotalAmt(brnd_no)
+	marketBrandStatsDict = marketDataByBranStats(brnd_no, pivotYm)
+	addDictToDataClass(meta, marketBrandStatsDict)
+	meta.y_store_survival = getAvgStoreLife(brnd_no)
+	yoyChangeRateDict = getYoyChangeRate(brnd_no, pivotYm)
+	addDictToDataClass(meta, yoyChangeRateDict)
+	AmtTopStoreRatesDict = getAmtTopStoreRates(brnd_no, pivotYm)
+	addDictToDataClass(meta, AmtTopStoreRatesDict)
+	meta.y_portal_search_cnt = getTotalKeywordSearchCount(brnd_no)
+	yoyOpenCloseStoreDict = getYoyOpenCloseStore(brnd_no, pivotYm)
+	addDictToDataClass(meta, yoyOpenCloseStoreDict)
 
-# "market_amt_rate": "T11.2%",
-# "market_store_cnt_rate": "T7.4%",
-# "market_amt_rank": "T3위",
-# "market_store_cnt_rank": "T12위",
-#
-# "y_store_survival": "T4년 11개월",
-# "y_amg_inc_dec_rate": "0.0%",
-# "y_store_cnt_inc_dec_rate": "0.0%",
-#
-# "amt_top1_store_rate": "T53.7%",
-# "amt_top2_store_rate": "T46.2%",
-# "amt_top3_store_rate": "T0.1%",
-#
-# "y_portal_search_cnt": "11,524",
-#
-# "y_open_store": "T1개",
-# "y_close_store": "T2개"
+	print("================ META RAW DATA.. ================")
+	print(meta)
+	return meta
+
+if __name__ == "__main__":
+	metaMain('BRD_20190835', 202412)

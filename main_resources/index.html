@@ -71,7 +71,9 @@
                 <div class="card">
                   <div class="card__item">
                     <h4 class="card__item--title">점포 수</h4>
-                    <span class="card__item--value">{{page1.store_cnt}}</span>
+                    <span class="card__item--value"
+                      >{{meta.brnd_store_cnt}}</span
+                    >
                   </div>
                 </div>
                 <div class="card">
@@ -167,17 +169,14 @@
                   <div class="brand-analysis-card">
                     <div class="brand-analysis-card__title">
                       <h4>확장성</h4>
-                      <div class="stars">
-                        <img class="star" src="public/icon-star-filled.svg" />
-                        <img class="star" src="public/icon-star-filled.svg" />
-                        <img class="star" src="public/icon-star-filled.svg" />
-                        <img class="star" src="public/icon-star-filled.svg" />
-                        <img class="star" src="public/icon-star-filled.svg" />
-                      </div>
+                      <div class="stars" id="stars-expansion"></div>
                     </div>
                     <!-- 수정 : 멘트 순서 변경 -->
                     <ul class="brand-analysis-card__list">
-                      <li>업계 내 점포 점유율 : {{meta.market_amt_rate}}</li>
+                      <li>
+                        업계 내 점포 점유율 : {{meta.market_amt_rate}} (업계 내
+                        {{meta.market_amt_rank}})
+                      </li>
                       <li>
                         업계 내 매출 점유율 : {{meta.market_store_cnt_rate}}
                         (업계 내 {{meta.market_store_cnt_rank}})
@@ -189,13 +188,7 @@
                     <!-- 수정 : 수익성 , 안정성 위치 변경 -->
                     <div class="brand-analysis-card__title">
                       <h4>수익성</h4>
-                      <div class="stars">
-                        <img class="star" src="public/icon-star-filled.svg" />
-                        <img class="star" src="public/icon-star-filled.svg" />
-                        <img class="star" src="public/icon-star-filled.svg" />
-                        <img class="star" src="public/icon-star-filled.svg" />
-                        <img class="star" src="public/icon-star-filled.svg" />
-                      </div>
+                      <div class="stars" id="stars-profitability"></div>
                     </div>
                     <!-- 수정 : 멘트 변경 -->
                     <ul class="brand-analysis-card__list">
@@ -210,13 +203,7 @@
                   <div class="brand-analysis-card">
                     <div class="brand-analysis-card__title">
                       <h4>안정성</h4>
-                      <div class="stars">
-                        <img class="star" src="public/icon-star-filled.svg" />
-                        <img class="star" src="public/icon-star-filled.svg" />
-                        <img class="star" src="public/icon-star-filled.svg" />
-                        <img class="star" src="public/icon-star-filled.svg" />
-                        <img class="star" src="public/icon-star-filled.svg" />
-                      </div>
+                      <div class="stars" id="stars-stability"></div>
                     </div>
                     <ul class="brand-analysis-card__list">
                       <li>평균 점포 수명 : {{meta.y_store_survival}}</li>
@@ -230,16 +217,10 @@
                   <div class="brand-analysis-card">
                     <div class="brand-analysis-card__title">
                       <h4>잠재성</h4>
-                      <div class="stars">
-                        <img class="star" src="public/icon-star-filled.svg" />
-                        <img class="star" src="public/icon-star-filled.svg" />
-                        <img class="star" src="public/icon-star-filled.svg" />
-                        <img class="star" src="public/icon-star-filled.svg" />
-                        <img class="star" src="public/icon-star-filled.svg" />
-                      </div>
+                      <div class="stars" id="stars-potential"></div>
                     </div>
                     <ul class="brand-analysis-card__list">
-                      <li>포털 검색량 : 연 {{meta.y_portal_search_cnt}}</li>
+                      <li>포털 검색량 : 월 {{meta.y_portal_search_cnt}}</li>
                       <li>
                         개업 현황 : 연 {{meta.y_open_store}}, 폐업 현황 : 연
                         {{meta.y_close_store}}
@@ -287,7 +268,9 @@
                 <div class="card">
                   <div class="card__item">
                     <h4 class="card__item--title">점포 수</h4>
-                    <span class="card__item--value">{{page2.store_cnt}}</span>
+                    <span class="card__item--value"
+                      >{{meta.brnd_store_cnt}}</span
+                    >
                   </div>
                 </div>
                 <div class="card">
@@ -311,9 +294,7 @@
                 <div class="card">
                   <div class="card__item">
                     <h4 class="card__item--title">총 운영기간</h4>
-                    <span class="card__item--value"
-                      >{{page2.opr_duration}}</span
-                    >
+                    <span class="card__item--value">{{meta.opr_duration}}</span>
                   </div>
                 </div>
               </div>
@@ -347,8 +328,8 @@
                 </thead>
                 <tbody class="growth-table__body">
                   <tr class="growth-table__row">
-                    <td class="growth-table__cell">{{page2.y_open_store}}</td>
-                    <td class="growth-table__cell">{{page2.y_close_store}}</td>
+                    <td class="growth-table__cell">{{meta.y_open_store}}</td>
+                    <td class="growth-table__cell">{{meta.y_close_store}}</td>
                     <td class="growth-table__cell">
                       {{page2.y_diff_store_cnt}}
                     </td>
@@ -477,8 +458,7 @@
               </div>
             </div>
             <p class="section__sub-title section__sub-title--desc">
-              *점포 수가 10개 미만인 경우, 지역과 매출액이 ‘ - ‘으로 노출될 수
-              있습니다.
+              *점포 수 표본이 적을 경우, 지역과 매출액이 ‘ - ‘으로 노출될 수 있습니다.
             </p>
           </section>
         </div>
@@ -715,8 +695,7 @@
               </div>
             </div>
             <p class="section__sub-title section__sub-title--desc">
-              *점포 수가 10개 미만인 경우, 지역과 매출액이 ‘ - ‘으로 노출될 수
-              있습니다.
+              *점포 수 표본이 적을 경우, 지역과 매출액이 ‘ - ‘으로 노출될 수 있습니다.
             </p>
           </section>
         </div>
@@ -745,7 +724,7 @@
             <div class="card">
               <div class="card__item">
                 <h4 class="card__item--title">동일 업종 브랜드 수</h4>
-                <span class="card__item--value">{{page4.uj3_store_cnt}}</span>
+                <span class="card__item--value">{{meta.market_uj3_total}}</span>
               </div>
             </div>
             <div class="card">
@@ -753,7 +732,7 @@
                 <h4 class="card__item--title">점포 수 순위</h4>
                 <div style="display: flex; gap: 6px">
                   <span class="card__item--value"
-                    >{{page4.uj3_store_cnt_rank}}</span
+                    >{{meta.market_store_cnt_rank}}</span
                   >
                   <span class="card__item--value"
                     >{{page4.uj3_store_cnt_priority}}</span
@@ -765,7 +744,9 @@
               <div class="card__item">
                 <h4 class="card__item--title">연매출 순위</h4>
                 <div style="display: flex; gap: 6px">
-                  <span class="card__item--value">{{page4.uj3_amt_rank}}</span>
+                  <span class="card__item--value"
+                    >{{meta.market_amt_rank}}</span
+                  >
                   <span class="card__item--value"
                     >{{page4.uj3_amt_priority}}</span
                   >

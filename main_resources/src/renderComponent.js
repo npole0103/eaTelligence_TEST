@@ -27,3 +27,25 @@ function renderCityRankList(data, containerSelector) {
     }
   });
 }
+
+function renderStars(brandData) {
+  const idMap = [
+    "stars-expansion", // 확장성
+    "stars-profitability", // 수익성
+    "stars-stability", // 안정성
+    "stars-potential", // 잠재성
+  ];
+
+  brandData.forEach((score, i) => {
+    const starCount = getStarCount(score);
+    const $target = $("#" + idMap[i]).empty();
+
+    for (let j = 0; j < starCount; j++) {
+      $("<img>", {
+        class: "star",
+        src: "public/icon-star-filled.svg",
+        alt: "별",
+      }).appendTo($target);
+    }
+  });
+}

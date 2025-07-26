@@ -37,10 +37,10 @@ function initRadarChart({ elementId, brandData, averageData }) {
     },
     radar: {
       indicator: [
-        { name: "확장성", max: 100 },
         { name: "수익성", max: 100 },
         { name: "안정성", max: 100 },
         { name: "잠재성", max: 100 },
+        { name: "확장성", max: 100 },
       ],
       radius: 80,
       splitNumber: 4,

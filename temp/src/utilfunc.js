@@ -15,12 +15,3 @@ function getDisplayRows(raw) {
   }
   return [...list.slice(0, 4), list[meIdx]];
 }
-
-// 별 갯수 확인 함수
-function getStarCount(score) {
-  if (score >= 80) return 5;
-  if (score >= 60) return 4;
-  if (score >= 40) return 3;
-  if (score >= 20) return 2;
-  return 1;
-}
