@@ -77,6 +77,11 @@ def getRankStoreCountByCity(brnd_no: str) -> List[RankByCity]:
     # 1. brnd_no 필터링
     filtered = datStore[datStore['brnd_no'] == brnd_no].copy()
 
+    if filtered.empty:
+        return [
+            RankByCity(rank='-', region='-', store_count='-') for _ in range(10)
+        ]
+
     # 2. dong_cd → cty_nm 매핑 dict 생성
     dong_to_city = dict(zip(cdDong['dong_cd'], cdDong['cty_nm']))
 

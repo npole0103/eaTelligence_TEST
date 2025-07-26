@@ -99,12 +99,24 @@ def getAliveStoreCount(brndNo: str, pivotYm: int) -> int:
     ]
     return aliveStores.shape[0]
 
-def getYoYTotalAmt(brnd_no: str) -> str:
-	# ① 2024년 1월부터 12월까지 필터링
-	df_2024 = brandStats[(brandStats['brnd_no'] == brnd_no)
-						 & (brandStats['ym_sales'] >= 202401)
-						 & (brandStats['ym_sales'] <= 202412)]
-	total_amt = df_2024['amt_avg'].sum()
+def getYoYTotalAmt(brnd_no: str, pivotYm: str | int) -> int:
+	# pivotYm에서 연도 추출
+	year = pivotYm // 100
+
+	# 해당 연도의 1월~12월 범위 계산
+	startYm = year * 100 + 1  # 예: 202401
+	endYm = year * 100 + 12  # 예: 202412
+
+	# 필터링
+	df_year = brandStats[
+		(brandStats['brnd_no'] == brnd_no) &
+		(brandStats['ym_sales'] >= startYm) &
+		(brandStats['ym_sales'] <= endYm)
+		].copy()
+
+	# ③ amt_avg * store_cnt_nice 총합 계산
+	df_year['weighted_amt'] = df_year['amt_avg'] * df_year['store_cnt_nice']
+	total_amt = df_year['weighted_amt'].sum()
 
 	return int(total_amt)
 
@@ -252,10 +264,10 @@ def getAmtTopStoreRates(brnd_no: str, pivotYm: int) -> dict:
 	top3 = len(datSalesAppend_filtered[(datSalesAppend_filtered['zone_amt_avg'] >= pct_75) & (datSalesAppend_filtered['zone_amt_avg'] < pct_50)])
 	top4 = len(datSalesAppend_filtered[datSalesAppend_filtered['zone_amt_avg'] < pct_75])
 
-	print(total)
-	print(datSalesAppend_filtered)
-	print(pct_25, pct_50, pct_75)
-	print(top1, top2, top3, top4)
+	# print(total)
+	# print(datSalesAppend_filtered)
+	# print(pct_25, pct_50, pct_75)
+	# print(top1, top2, top3, top4)
 
 	def rate(n) -> float:
 		return round(n / total * 100, 1) if total > 0 else None
@@ -336,7 +348,7 @@ def metaMain(brnd_no: str, pivotYm: int | str):
 	meta.fchhq_nm = getFchhqName(brnd_no)
 	meta.opr_duration = getElapsedYearsMonths(meta.ymd_brnd)
 	meta.brnd_store_cnt = getAliveStoreCount(brnd_no, pivotYm)
-	meta.y_total_amt = getYoYTotalAmt(brnd_no)
+	meta.y_total_amt = getYoYTotalAmt(brnd_no, pivotYm)
 	marketBrandStatsDict = marketDataByBranStats(brnd_no, pivotYm)
 	addDictToDataClass(meta, marketBrandStatsDict)
 	meta.y_store_survival = getAvgStoreLife(brnd_no)

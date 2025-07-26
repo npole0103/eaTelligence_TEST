@@ -89,8 +89,8 @@ class Page3:
     m_avg_amt: str
     y_avg_amt_per_store: str
     m_avg_amt_per_store: str
-    amt_rank_by_city: List[RankByCity]
     sales_trend: SalesTrend
+    amt_rank_by_city: List[RankByCity]
 
 
 @dataclass
