@@ -10,6 +10,7 @@ dat/
 pdf/
 logo/
 output/
+chroma_db*/
 
 # User-specific stuff
 .idea/**/workspace.xml
